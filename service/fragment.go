@@ -4,15 +4,13 @@ package service
 type Fragment struct {
 	ID      int    `json:"id"`
 	Title   string `json:"title"`
-	Summary string `json:"summary"`
 	Content string `json:"content"`
-	TagID   int    `json:"tagId"`
 }
 
 const (
-	queryFragmentsSQL     = "select id, title, summary, content, tag_id from fragment "
-	addFragmentSQL        = "insert into fragment(title, summary, content, tag_id)values($1, $2, $3, $4)"
-	updateFragmentSQL     = "update fragment title=$1, summary=$2, content=$3, tag_id=$4 where id=$5"
+	queryFragmentsSQL     = "select id, title, content from fragment "
+	addFragmentSQL        = "insert into fragment(title, content)values($1, $2)"
+	updateFragmentSQL     = "update fragment title=$1, content=$2 where id=$3"
 	deleteFragmentByIDSQL = "delete from fragment where id=$1"
 )
 
@@ -26,9 +24,6 @@ func queryFragments(fragment Fragment, lastID int) []Fragment {
 		whereSQL += " id=" + intToSafeString(fragment.ID) + " and "
 	}
 
-	if fragment.TagID > 0 {
-		whereSQL += " tag_id=" + intToSafeString(fragment.TagID) + " and "
-	}
 	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
 	rows, err := connection.Query(queryFragmentsSQL + whereSQL)
 	var fragments []Fragment
@@ -42,7 +37,7 @@ func queryFragments(fragment Fragment, lastID int) []Fragment {
 
 	var temp Fragment
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Title, &temp.Summary, &temp.Content, &temp.TagID)
+		rows.Scan(&temp.ID, &temp.Title, &temp.Content)
 		fragments = append(fragments, temp)
 	}
 
@@ -57,7 +52,7 @@ func addFragment(fragment Fragment) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(fragment.Title, fragment.Summary, fragment.Content, fragment.TagID)
+	_, err = stmt.Exec(fragment.Title, fragment.Content)
 	if err != nil {
 		return -1
 	}
@@ -72,7 +67,7 @@ func updateFragment(fragment Fragment) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(fragment.Title, fragment.Summary, fragment.Content, fragment.TagID, fragment.ID)
+	_, err = stmt.Exec(fragment.Title, fragment.Content, fragment.ID)
 	if err != nil {
 		return -1
 	}

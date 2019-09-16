@@ -20,12 +20,11 @@ func SaveFragment(fragment Fragment) int {
 }
 
 //GetFragmentByID 查询碎片
-func GetFragmentByID(fragmentID int, tagID int) Fragment {
+func GetFragmentByID(fragmentID int) Fragment {
 	if fragmentID > 0 {
 		return queryFragmentByID(fragmentID)
 	}
 	var fragment Fragment
-	fragment.TagID = tagID
 	return fragment
 }
 

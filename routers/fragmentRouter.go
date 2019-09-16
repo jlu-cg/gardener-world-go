@@ -26,8 +26,7 @@ func initFragment(app *iris.Application, crs context.Handler) {
 
 		fragmentV1.Get("/detail", func(ctx iris.Context) {
 			fragmentID := getIntVal("fragmentId", 0, ctx)
-			tagID := getIntVal("tagId", 0, ctx)
-			result := service.GetFragmentByID(fragmentID, tagID)
+			result := service.GetFragmentByID(fragmentID)
 			ctx.JSON(result)
 		})
 

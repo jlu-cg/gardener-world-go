@@ -2,19 +2,16 @@ package service
 
 //Tag 标签
 type Tag struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	ParentID int    `json:"parentId"`
-	Path     string `json:"path"`
-	NamePath string `json:"namePath"`
-	Summary  string `json:"summary"`
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	Classification int    `json:"classification"`
 }
 
 const (
-	queryTagsSQL     = "select id, name, parent_id, path, name_path, summary from tag "
-	addTagSQL        = "insert into tag(name, parent_id, path, name_path, summary)values($1, $2, $3, $4, $5)"
-	updateTagSQL     = "update tag set name=$1, parent_id=$2, path=$3, name_path=$4, summary=$5 where id=$6"
-	queryTagByIDSQL  = "select id, name, parent_id,path, name_path, summary from tag where id=$1"
+	queryTagsSQL     = "select id, name, classification from tag "
+	addTagSQL        = "insert into tag(name, parent_id, classification)values($1, $2, $3)"
+	updateTagSQL     = "update tag set name=$1, classification=$2 where id=$3"
+	queryTagByIDSQL  = "select id, name, classification from tag where id=$1"
 	deleteTagByIDSQL = "delete from tag where id=$1"
 )
 
@@ -32,9 +29,6 @@ func queryTags(tag Tag, lastID int) []Tag {
 	if tag.ID > 0 {
 		whereSQL += " id=" + intToSafeString(tag.ID) + " and "
 	}
-	if tag.ParentID >= 0 {
-		whereSQL += " parent_id=" + intToSafeString(tag.ParentID) + " and "
-	}
 	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
 	rows, err := connection.Query(queryTagsSQL + whereSQL)
 	if err != nil {
@@ -51,7 +45,7 @@ func queryTags(tag Tag, lastID int) []Tag {
 
 	var temp Tag
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Name, &temp.ParentID, &temp.Path, &temp.NamePath, &temp.Summary)
+		rows.Scan(&temp.ID, &temp.Name, &temp.Classification)
 		tags = append(tags, temp)
 	}
 
@@ -67,7 +61,7 @@ func addTag(tag Tag) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(tag.Name, tag.ParentID, tag.Path, tag.NamePath, tag.Summary)
+	_, err = stmt.Exec(tag.Name, tag.Classification)
 	if err != nil {
 		return -1
 	}
@@ -83,7 +77,7 @@ func updateTag(tag Tag) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(tag.Name, tag.ParentID, tag.Path, tag.NamePath, tag.Summary, tag.ID)
+	_, err = stmt.Exec(tag.Name, tag.Classification)
 	if err != nil {
 		return -1
 	}
