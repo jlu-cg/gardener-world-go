@@ -12,27 +12,27 @@ func initArticleFragmentRelation(app *iris.Application, crs context.Handler) {
 		articleFragmentRelationV1.Post("/list", func(ctx iris.Context) {
 			var queryArticleFragmentRelationDetail service.ArticleFragmentRelationDetail
 			ctx.ReadJSON(&queryArticleFragmentRelationDetail)
-			details := service.GetArticleRelationDetails(queryArticleFragmentRelationDetail)
+			details := service.GetArticleFragmentRelationDetails(queryArticleFragmentRelationDetail)
 			ctx.JSON(details)
 		})
 
 		articleFragmentRelationV1.Post("/save", func(ctx iris.Context) {
 			var addArticleFragmentRelation service.ArticleFragmentRelationDetail
 			ctx.ReadJSON(&addArticleFragmentRelation)
-			code := service.AddArticleRelation(addArticleFragmentRelation)
+			code := service.AddArticleFragmentRelation(addArticleFragmentRelation)
 			ctx.JSON(code)
 		})
 
 		articleFragmentRelationV1.Post("/saveOrder", func(ctx iris.Context) {
 			var addArticleFragmentRelations []service.ArticleFragmentRelationDetail
 			ctx.ReadJSON(&addArticleFragmentRelations)
-			code := service.UpdateArticleRelations(addArticleFragmentRelations)
+			code := service.UpdateArticleFragmentRelations(addArticleFragmentRelations)
 			ctx.JSON(code)
 		})
 
 		articleFragmentRelationV1.Get("/delete", func(ctx iris.Context) {
 			articleFragmentRelationID := getIntVal("articleFragmentRelationId", 0, ctx)
-			result := service.DeleteArticleRelationByID(articleFragmentRelationID)
+			result := service.DeleteArticleFragmentRelationByID(articleFragmentRelationID)
 			ctx.JSON(result)
 		})
 	}

@@ -5,7 +5,7 @@ type ArticleFragmentRelationDetail struct {
 	ID         int    `json:"id"`
 	ArticleID  int    `json:"articleId"`
 	FragmentID int    `json:"fragmentId"`
-	Pos        int16  `json:"pos"`
+	Position   int16  `json:"position"`
 	Title      string `json:"title"`
 }
 
@@ -13,21 +13,21 @@ type ArticleFragmentRelationDetail struct {
 type ArticleFragmentRelationDocumentDetail struct {
 	ID         int    `json:"id"`
 	FragmentID int    `json:"fragmentId"`
-	Pos        int16  `json:"pos"`
+	Position   int16  `json:"position"`
 	Title      string `json:"title"`
 	Content    string `json:"content"`
 }
 
 const (
-	queryArticleRelationDetailsSQL         = "select a.id, a.article_id, a.pos, b.id, b.title, b.summary from article_fragment_relation a inner join fragment b on a.fragment_id=b.id "
-	queryArticleRelationDocumentDetailsSQL = "select a.id, a.pos, b.id, b.title, b.content from article_fragment_relation a inner join fragment b on a.fragment_id=b.id where a.article_id=$1 order by a.pos asc"
-	addArticleRelationSQL                  = "insert into article_fragment_relation(article_id, fragment_id, pos)values($1, $2, $3)"
-	deleteArticleRelationSQL               = "delete from article_fragment_relation where id=$1"
-	updateArticleRelationPosSQL            = "update article_fragment_relation set pos=$1 where id=$2"
-	queryArticleRelationDetailByIDSQL      = "select id, article_id, fragment_id, pos from article_fragment_relation where id=$1"
+	queryArticleFragmentRelationDetailsSQL         = "select a.id, a.article_id, a.position, b.id, b.title from article_fragment_relation a inner join fragment b on a.fragment_id=b.id "
+	queryArticleFragmentRelationDocumentDetailsSQL = "select a.id, a.position, b.id, b.title, b.content from article_fragment_relation a inner join fragment b on a.fragment_id=b.id where a.article_id=$1 order by a.pos asc"
+	addArticleFragmentRelationSQL                  = "insert into article_fragment_relation(article_id, fragment_id, position)values($1, $2, $3)"
+	deleteArticleFragmentRelationSQL               = "delete from article_fragment_relation where id=$1"
+	updateArticleFragmentRelationPosSQL            = "update article_fragment_relation set position=$1 where id=$2"
+	queryArticleFragmentRelationDetailByIDSQL      = "select id, article_id, fragment_id, position from article_fragment_relation where id=$1"
 )
 
-func queryArticleRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {
+func queryArticleFragmentRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {
 
 	var articleRelationDetails []ArticleFragmentRelationDetail
 	whereSQL := " where 1=1 "
@@ -37,11 +37,11 @@ func queryArticleRelationDetails(detail ArticleFragmentRelationDetail) []Article
 		return articleRelationDetails
 	}
 
-	whereSQL += " order by a.pos asc "
+	whereSQL += " order by a.position asc "
 	connection := connect()
 	defer release(connection)
 
-	rows, err := connection.Query(queryArticleRelationDetailsSQL + whereSQL)
+	rows, err := connection.Query(queryArticleFragmentRelationDetailsSQL + whereSQL)
 	defer rows.Close()
 	if rows == nil {
 		return articleRelationDetails
@@ -52,27 +52,27 @@ func queryArticleRelationDetails(detail ArticleFragmentRelationDetail) []Article
 
 	var temp ArticleFragmentRelationDetail
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.ArticleID, &temp.Pos, &temp.FragmentID, &temp.Title)
+		rows.Scan(&temp.ID, &temp.ArticleID, &temp.Position, &temp.FragmentID, &temp.Title)
 		articleRelationDetails = append(articleRelationDetails, temp)
 	}
 
 	return articleRelationDetails
 }
 
-func addArticleRelation(detail ArticleFragmentRelationDetail) int {
-	queryDetail := queryArticleRelationDetailByID(detail.ID)
-	if queryDetail.ID <= 0 {
+func addArticleFragmentRelation(detail ArticleFragmentRelationDetail) int {
+	queryDetail := queryArticleFragmentRelationDetailByID(detail.ID)
+	if queryDetail.ID > 0 {
 		return -1
 	}
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(addArticleRelationSQL)
+	stmt, err := connection.Prepare(addArticleFragmentRelationSQL)
 	if err != nil {
 		return -1
 	}
 
-	_, err = stmt.Exec(detail.ArticleID, detail.FragmentID, detail.Pos)
+	_, err = stmt.Exec(detail.ArticleID, detail.FragmentID, detail.Position)
 	if err != nil {
 		return -1
 
@@ -80,17 +80,17 @@ func addArticleRelation(detail ArticleFragmentRelationDetail) int {
 	return 0
 }
 
-func updateArticleRelations(details []ArticleFragmentRelationDetail) int {
+func updateArticleFragmentRelations(details []ArticleFragmentRelationDetail) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(updateArticleRelationPosSQL)
+	stmt, err := connection.Prepare(updateArticleFragmentRelationPosSQL)
 	if err != nil {
 		return -1
 	}
 
 	for _, detail := range details {
-		_, err = stmt.Exec(detail.Pos, detail.ID)
+		_, err = stmt.Exec(detail.Position, detail.ID)
 		if err != nil {
 			return -1
 		}
@@ -98,11 +98,11 @@ func updateArticleRelations(details []ArticleFragmentRelationDetail) int {
 	return 0
 }
 
-func deleteArticleRelationByID(id int) int {
+func deleteArticleFragmentRelationByID(id int) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteArticleRelationSQL)
+	stmt, err := connection.Prepare(deleteArticleFragmentRelationSQL)
 	if err != nil {
 		return -1
 	}
@@ -113,12 +113,12 @@ func deleteArticleRelationByID(id int) int {
 	return 0
 }
 
-func queryArticleRelationDetailByID(ID int) ArticleFragmentRelationDetail {
+func queryArticleFragmentRelationDetailByID(ID int) ArticleFragmentRelationDetail {
 	var articleFragmentRelationDetail ArticleFragmentRelationDetail
 	connection := connect()
 	defer release(connection)
 
-	rows, err := connection.Query(queryArticleRelationDetailByIDSQL, ID)
+	rows, err := connection.Query(queryArticleFragmentRelationDetailByIDSQL, ID)
 	defer rows.Close()
 	if rows == nil {
 		return articleFragmentRelationDetail
@@ -128,19 +128,19 @@ func queryArticleRelationDetailByID(ID int) ArticleFragmentRelationDetail {
 	}
 
 	for rows.Next() {
-		rows.Scan(&articleFragmentRelationDetail.ID, &articleFragmentRelationDetail.ArticleID, &articleFragmentRelationDetail.FragmentID, &articleFragmentRelationDetail.Pos)
+		rows.Scan(&articleFragmentRelationDetail.ID, &articleFragmentRelationDetail.ArticleID, &articleFragmentRelationDetail.FragmentID, &articleFragmentRelationDetail.Position)
 	}
 
 	return articleFragmentRelationDetail
 }
 
-func queryArticleRelationDocumentDetails(articleID int) []ArticleFragmentRelationDocumentDetail {
+func queryArticleFragmentRelationDocumentDetails(articleID int) []ArticleFragmentRelationDocumentDetail {
 
 	var articleFragmentRelationDocumentDetails []ArticleFragmentRelationDocumentDetail
 	connection := connect()
 	defer release(connection)
 
-	rows, err := connection.Query(queryArticleRelationDocumentDetailsSQL, articleID)
+	rows, err := connection.Query(queryArticleFragmentRelationDocumentDetailsSQL, articleID)
 	defer rows.Close()
 	if rows == nil {
 		return articleFragmentRelationDocumentDetails
@@ -151,7 +151,7 @@ func queryArticleRelationDocumentDetails(articleID int) []ArticleFragmentRelatio
 
 	var temp ArticleFragmentRelationDocumentDetail
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Pos, &temp.FragmentID, &temp.Title, &temp.Content)
+		rows.Scan(&temp.ID, &temp.Position, &temp.FragmentID, &temp.Title, &temp.Content)
 		articleFragmentRelationDocumentDetails = append(articleFragmentRelationDocumentDetails, temp)
 	}
 

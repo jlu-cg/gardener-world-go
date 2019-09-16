@@ -10,29 +10,29 @@ func initArticleArticleRelation(app *iris.Application, crs context.Handler) {
 	articleArticleRelationV1 := app.Party("/article/article/relation/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		articleArticleRelationV1.Post("/list", func(ctx iris.Context) {
-			var queryArticleDependenceDetail service.ArticleArticleRelationDetail
-			ctx.ReadJSON(&queryArticleDependenceDetail)
-			details := service.GetArticleDependenceDetails(queryArticleDependenceDetail)
+			var queryArticleArticleRelationDetail service.ArticleArticleRelationDetail
+			ctx.ReadJSON(&queryArticleArticleRelationDetail)
+			details := service.GetArticleArticleRelationDetails(queryArticleArticleRelationDetail)
 			ctx.JSON(details)
 		})
 
 		articleArticleRelationV1.Post("/save", func(ctx iris.Context) {
 			var addArticleArticleRelationDetail service.ArticleArticleRelationDetail
 			ctx.ReadJSON(&addArticleArticleRelationDetail)
-			code := service.AddArticleDependence(addArticleArticleRelationDetail)
+			code := service.AddArticleArticleRelation(addArticleArticleRelationDetail)
 			ctx.JSON(code)
 		})
 
 		articleArticleRelationV1.Post("/saveOrder", func(ctx iris.Context) {
 			var articleArticleRelationDetails []service.ArticleArticleRelationDetail
 			ctx.ReadJSON(&articleArticleRelationDetails)
-			code := service.UpdateArticleDependences(articleArticleRelationDetails)
+			code := service.UpdateArticleArticleRelations(articleArticleRelationDetails)
 			ctx.JSON(code)
 		})
 
 		articleArticleRelationV1.Get("/delete", func(ctx iris.Context) {
 			articleArticleRelationID := getIntVal("articleArticleRelationId", 0, ctx)
-			result := service.DeleteArticleDependenceByID(articleArticleRelationID)
+			result := service.DeleteArticleArticleRelationByID(articleArticleRelationID)
 			ctx.JSON(result)
 		})
 	}

@@ -1,21 +1,21 @@
 package service
 
-//GetArticleDependenceDetails 查询依赖文章
-func GetArticleDependenceDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
-	return queryArticleDependenceDetails(detail)
+//GetArticleArticleRelationDetails 查询依赖文章
+func GetArticleArticleRelationDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
+	return queryArticleArticleRelationDetails(detail)
 }
 
-//AddArticleDependence 添加依赖文章
-func AddArticleDependence(detail ArticleArticleRelationDetail) int {
-	return addArticleDependence(detail)
+//AddArticleArticleRelation 添加依赖文章
+func AddArticleArticleRelation(detail ArticleArticleRelationDetail) int {
+	return addArticleArticleRelation(detail)
 }
 
-//UpdateArticleDependences 修改顺序
-func UpdateArticleDependences(details []ArticleArticleRelationDetail) int {
-	return updateArticleDependences(details)
+//UpdateArticleArticleRelations 修改顺序
+func UpdateArticleArticleRelations(details []ArticleArticleRelationDetail) int {
+	return updateArticleArticleRelations(details)
 }
 
-//DeleteArticleDependenceByID 删除依赖文章
-func DeleteArticleDependenceByID(id int) int {
-	return deleteArticleDependenceByID(id)
+//DeleteArticleArticleRelationByID 删除依赖文章
+func DeleteArticleArticleRelationByID(id int) int {
+	return deleteArticleArticleRelationByID(id)
 }

@@ -4,37 +4,37 @@ package service
 type ArticleArticleRelationDetail struct {
 	ID              int    `json:"id"`
 	ArticleID       int    `json:"articleId"`
-	RelateArticleID int    `json:"relateArticleID"`
-	Pos             int16  `json:"pos"`
+	RelateArticleID int    `json:"relateArticleId"`
+	Position        int16  `json:"position"`
 	Title           string `json:"title"`
 }
 
 const (
-	queryArticleDependenceDetailsSQL = "select a.id, a.article_id, a.pos, b.id, b.title from article_article_relation a inner join article b on a.relate_article_id=b.id "
-	addArticleDependenceSQL          = "insert into article_article_relation(article_id, relate_article_id, pos)values($1, $2, $3)"
-	deleteArticleDependenceSQL       = "delete from article_article_relation where id=$1"
-	updateArticleDependencePosSQL    = "update article_article_relation set pos=$1 where id=$2"
-	queryArticleDependenceByIDSQL    = "select id, article_id, relate_article_id, pos from article_article_relation where id=$1"
+	queryArticleArticleRelationDetailsSQL = "select a.id, a.article_id, a.position, b.id, b.title from article_article_relation a inner join article b on a.relate_article_id=b.id "
+	addArticleArticleRelationSQL          = "insert into article_article_relation(article_id, relate_article_id, position)values($1, $2, $3)"
+	deleteArticleArticleRelationSQL       = "delete from article_article_relation where id=$1"
+	updateArticleArticleRelationPosSQL    = "update article_article_relation set position=$1 where id=$2"
+	queryArticleArticleRelationByIDSQL    = "select id, article_id, relate_article_id, position from article_article_relation where id=$1"
 )
 
-func queryArticleDependenceDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
+func queryArticleArticleRelationDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
 
-	var articleDependenceDetails []ArticleArticleRelationDetail
+	var articleArticleRelationDetails []ArticleArticleRelationDetail
 	whereSQL := " where 1=1 "
 	if detail.ArticleID > 0 {
 		whereSQL += " and a.article_id=" + intToSafeString(detail.ArticleID)
 	} else {
-		return articleDependenceDetails
+		return articleArticleRelationDetails
 	}
 
-	whereSQL += " order by a.pos asc "
+	whereSQL += " order by a.position asc "
 	connection := connect()
 	defer release(connection)
 
-	rows, err := connection.Query(queryArticleDependenceDetailsSQL + whereSQL)
+	rows, err := connection.Query(queryArticleArticleRelationDetailsSQL + whereSQL)
 	defer rows.Close()
 	if rows == nil {
-		return articleDependenceDetails
+		return articleArticleRelationDetails
 	}
 	if err != nil {
 		panic(err)
@@ -42,16 +42,16 @@ func queryArticleDependenceDetails(detail ArticleArticleRelationDetail) []Articl
 
 	var temp ArticleArticleRelationDetail
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.ArticleID, &temp.Pos, &temp.RelateArticleID, &temp.Title)
-		articleDependenceDetails = append(articleDependenceDetails, temp)
+		rows.Scan(&temp.ID, &temp.ArticleID, &temp.Position, &temp.RelateArticleID, &temp.Title)
+		articleArticleRelationDetails = append(articleArticleRelationDetails, temp)
 	}
 
-	return articleDependenceDetails
+	return articleArticleRelationDetails
 }
 
-func addArticleDependence(detail ArticleArticleRelationDetail) int {
+func addArticleArticleRelation(detail ArticleArticleRelationDetail) int {
 	if detail.ID > 0 {
-		queryDetail := queryArticleDependenceDetailByID(detail.ID)
+		queryDetail := queryArticleArticleRelationDetailByID(detail.ID)
 		if queryDetail.ID <= 0 {
 			return -1
 		}
@@ -59,12 +59,12 @@ func addArticleDependence(detail ArticleArticleRelationDetail) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(addArticleDependenceSQL)
+	stmt, err := connection.Prepare(addArticleArticleRelationSQL)
 	if err != nil {
 		return -1
 	}
 
-	_, err = stmt.Exec(detail.ArticleID, detail.RelateArticleID, detail.Pos)
+	_, err = stmt.Exec(detail.ArticleID, detail.RelateArticleID, detail.Position)
 	if err != nil {
 		return -1
 
@@ -72,17 +72,17 @@ func addArticleDependence(detail ArticleArticleRelationDetail) int {
 	return 0
 }
 
-func updateArticleDependences(details []ArticleArticleRelationDetail) int {
+func updateArticleArticleRelations(details []ArticleArticleRelationDetail) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(updateArticleDependencePosSQL)
+	stmt, err := connection.Prepare(updateArticleArticleRelationPosSQL)
 	if err != nil {
 		return -1
 	}
 
 	for _, detail := range details {
-		_, err = stmt.Exec(detail.Pos, detail.ID)
+		_, err = stmt.Exec(detail.Position, detail.ID)
 		if err != nil {
 			return -1
 		}
@@ -90,11 +90,11 @@ func updateArticleDependences(details []ArticleArticleRelationDetail) int {
 	return 0
 }
 
-func deleteArticleDependenceByID(id int) int {
+func deleteArticleArticleRelationByID(id int) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteArticleDependenceSQL)
+	stmt, err := connection.Prepare(deleteArticleArticleRelationSQL)
 	if err != nil {
 		return -1
 	}
@@ -105,23 +105,23 @@ func deleteArticleDependenceByID(id int) int {
 	return 0
 }
 
-func queryArticleDependenceDetailByID(ID int) ArticleArticleRelationDetail {
-	var articleDependenceDetail ArticleArticleRelationDetail
+func queryArticleArticleRelationDetailByID(ID int) ArticleArticleRelationDetail {
+	var articleArticleRelationDetail ArticleArticleRelationDetail
 	connection := connect()
 	defer release(connection)
 
-	rows, err := connection.Query(queryArticleDependenceByIDSQL, ID)
+	rows, err := connection.Query(queryArticleArticleRelationByIDSQL, ID)
 	defer rows.Close()
 	if rows == nil {
-		return articleDependenceDetail
+		return articleArticleRelationDetail
 	}
 	if err != nil {
 		panic(err)
 	}
 
 	for rows.Next() {
-		rows.Scan(&articleDependenceDetail.ID, &articleDependenceDetail.ArticleID, &articleDependenceDetail.RelateArticleID, &articleDependenceDetail.Pos)
+		rows.Scan(&articleArticleRelationDetail.ID, &articleArticleRelationDetail.ArticleID, &articleArticleRelationDetail.RelateArticleID, &articleArticleRelationDetail.Position)
 	}
 
-	return articleDependenceDetail
+	return articleArticleRelationDetail
 }

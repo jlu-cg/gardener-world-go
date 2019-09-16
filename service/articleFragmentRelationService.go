@@ -1,21 +1,21 @@
 package service
 
-//GetArticleRelationDetails 查询关联碎片
-func GetArticleRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {
-	return queryArticleRelationDetails(detail)
+//GetArticleFragmentRelationDetails 查询关联碎片
+func GetArticleFragmentRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {
+	return queryArticleFragmentRelationDetails(detail)
 }
 
-//AddArticleRelation 添加关联碎片
-func AddArticleRelation(detail ArticleFragmentRelationDetail) int {
-	return addArticleRelation(detail)
+//AddArticleFragmentRelation 添加关联碎片
+func AddArticleFragmentRelation(detail ArticleFragmentRelationDetail) int {
+	return addArticleFragmentRelation(detail)
 }
 
-//UpdateArticleRelations 修改顺序
-func UpdateArticleRelations(details []ArticleFragmentRelationDetail) int {
-	return updateArticleRelations(details)
+//UpdateArticleFragmentRelations 修改顺序
+func UpdateArticleFragmentRelations(details []ArticleFragmentRelationDetail) int {
+	return updateArticleFragmentRelations(details)
 }
 
-//DeleteArticleRelationByID 删除关联关系
-func DeleteArticleRelationByID(id int) int {
-	return deleteArticleRelationByID(id)
+//DeleteArticleFragmentRelationByID 删除关联关系
+func DeleteArticleFragmentRelationByID(id int) int {
+	return deleteArticleFragmentRelationByID(id)
 }

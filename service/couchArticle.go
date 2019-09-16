@@ -9,7 +9,7 @@ import (
 type articleDocument struct {
 	Article                                Article                                 `json:"article"`
 	ArticleFragmentRelationDocumentDetails []ArticleFragmentRelationDocumentDetail `json:"relations"`
-	ArticleArticleRelationDetails          []ArticleArticleRelationDetail          `json:"dependences"`
+	ArticleFragmentRelationDetails         []ArticleFragmentRelationDetail         `json:"dependences"`
 }
 
 const (
@@ -26,12 +26,12 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 	}
 	var articleDocument articleDocument
 	articleDocument.Article = article
-	articleFragmentRelationDocumentDetails := queryArticleRelationDocumentDetails(articleID)
+	articleFragmentRelationDocumentDetails := queryArticleFragmentRelationDocumentDetails(articleID)
 	articleDocument.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
-	var detail ArticleArticleRelationDetail
+	var detail ArticleFragmentRelationDetail
 	detail.ArticleID = articleID
-	articleDependenceDocumentDetails := queryArticleDependenceDetails(detail)
-	articleDocument.ArticleArticleRelationDetails = articleDependenceDocumentDetails
+	ArticleFragmentRelationDetails := queryArticleFragmentRelationDetails(detail)
+	articleDocument.ArticleFragmentRelationDetails = ArticleFragmentRelationDetails
 	articleIDStr := strconv.Itoa(articleID)
 	articleDocumentBody, _ := json.Marshal(articleDocument)
 	code := couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
