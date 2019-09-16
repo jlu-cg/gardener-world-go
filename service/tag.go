@@ -2,16 +2,16 @@ package service
 
 //Tag 标签
 type Tag struct {
-	ID             int    `json:"id"`
-	Name           string `json:"name"`
-	Classification int    `json:"classification"`
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	TagType int    `json:"tagType"`
 }
 
 const (
-	queryTagsSQL     = "select id, name, classification from tag "
-	addTagSQL        = "insert into tag(name, parent_id, classification)values($1, $2, $3)"
-	updateTagSQL     = "update tag set name=$1, classification=$2 where id=$3"
-	queryTagByIDSQL  = "select id, name, classification from tag where id=$1"
+	queryTagsSQL     = "select id, name, tag_type from tag "
+	addTagSQL        = "insert into tag(name, tag_type)values($1, $2)"
+	updateTagSQL     = "update tag set name=$1, tag_type=$2 where id=$3"
+	queryTagByIDSQL  = "select id, name, tag_type from tag where id=$1"
 	deleteTagByIDSQL = "delete from tag where id=$1"
 )
 
@@ -45,7 +45,7 @@ func queryTags(tag Tag, lastID int) []Tag {
 
 	var temp Tag
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Name, &temp.Classification)
+		rows.Scan(&temp.ID, &temp.Name, &temp.TagType)
 		tags = append(tags, temp)
 	}
 
@@ -61,7 +61,7 @@ func addTag(tag Tag) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(tag.Name, tag.Classification)
+	_, err = stmt.Exec(tag.Name, tag.TagType)
 	if err != nil {
 		return -1
 	}
@@ -77,7 +77,7 @@ func updateTag(tag Tag) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(tag.Name, tag.Classification)
+	_, err = stmt.Exec(tag.Name, tag.TagType)
 	if err != nil {
 		return -1
 	}
