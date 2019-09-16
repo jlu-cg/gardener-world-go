@@ -16,9 +16,9 @@ func InitDocRouter(app *iris.Application, crs context.Handler) {
 
 	initArticle(app, crs)
 
-	initArticleRelation(app, crs)
+	initArticleFragmentRelation(app, crs)
 
-	initArticleDependence(app, crs)
+	initArticleArticleRelation(app, crs)
 }
 
 func getIntVal(key string, defaultVal int, ctx iris.Context) int {

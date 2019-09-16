@@ -2,16 +2,14 @@ package service
 
 //Article 文章
 type Article struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Summary string `json:"summary"`
-	TagID   int    `json:"tagId"`
+	ID    int    `json:"id"`
+	Title string `json:"title"`
 }
 
 const (
-	queryArticlesSQL     = "select id, title, summary, tag_id from article "
-	addArticleSQL        = "insert into article(title, summary, tag_id)values($1, $2, $3)"
-	updateArticleSQL     = "update article title=$1, summary=$2, tag_id=$3 where id=$4"
+	queryArticlesSQL     = "select id, title from article "
+	addArticleSQL        = "insert into article(title)values($1)"
+	updateArticleSQL     = "update article title=$1 where id=$4"
 	deleteArticleByIDSQL = "delete from article where id=$1"
 )
 
@@ -25,9 +23,6 @@ func queryArticles(article Article, lastID int) []Article {
 		whereSQL += " id=" + intToSafeString(article.ID) + " and "
 	}
 
-	if article.TagID > 0 {
-		whereSQL += " tag_id=" + intToSafeString(article.TagID) + " and "
-	}
 	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
 	rows, err := connection.Query(queryArticlesSQL + whereSQL)
 	defer rows.Close()
@@ -41,7 +36,7 @@ func queryArticles(article Article, lastID int) []Article {
 
 	var temp Article
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Title, &temp.Summary, &temp.TagID)
+		rows.Scan(&temp.ID, &temp.Title)
 		articles = append(articles, temp)
 	}
 
@@ -56,7 +51,7 @@ func addArticle(article Article) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(article.Title, article.Summary, article.TagID)
+	_, err = stmt.Exec(article.Title)
 	if err != nil {
 		return -1
 	}
@@ -71,7 +66,7 @@ func updateArticle(article Article) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(article.Title, article.Summary, article.TagID, article.ID)
+	_, err = stmt.Exec(article.Title, article.ID)
 	if err != nil {
 		return -1
 	}

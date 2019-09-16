@@ -25,7 +25,6 @@ func GetArticleByID(articleID int, tagID int) Article {
 		return queryArticleByID(articleID)
 	}
 	var article Article
-	article.TagID = tagID
 	return article
 }
 

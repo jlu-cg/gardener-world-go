@@ -1,17 +1,17 @@
 package service
 
 //GetArticleDependenceDetails 查询依赖文章
-func GetArticleDependenceDetails(detail ArticleDependenceDetail) []ArticleDependenceDetail {
+func GetArticleDependenceDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
 	return queryArticleDependenceDetails(detail)
 }
 
 //AddArticleDependence 添加依赖文章
-func AddArticleDependence(detail ArticleDependenceDetail) int {
+func AddArticleDependence(detail ArticleArticleRelationDetail) int {
 	return addArticleDependence(detail)
 }
 
 //UpdateArticleDependences 修改顺序
-func UpdateArticleDependences(details []ArticleDependenceDetail) int {
+func UpdateArticleDependences(details []ArticleArticleRelationDetail) int {
 	return updateArticleDependences(details)
 }
 
