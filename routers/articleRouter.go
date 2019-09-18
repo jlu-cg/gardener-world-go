@@ -42,6 +42,12 @@ func initArticle(app *iris.Application, crs context.Handler) {
 			result := service.CouchdbArticleGenerateDocument(articleID)
 			ctx.JSON(result)
 		})
+
+		articleV1.Get("/document/detail", func(ctx iris.Context) {
+			articleID := getIntVal("articleId", 0, ctx)
+			result := service.CouchdbGetArticleDocumentByArticleID(articleID)
+			ctx.JSON(result)
+		})
 	}
 
 }

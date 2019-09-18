@@ -6,7 +6,8 @@ import (
 	"strconv"
 )
 
-type articleDocument struct {
+//ArticleDocument 文章文档
+type ArticleDocument struct {
 	Article                                Article                                 `json:"article"`
 	ArticleFragmentRelationDocumentDetails []ArticleFragmentRelationDocumentDetail `json:"relations"`
 	ArticleFragmentRelationDetails         []ArticleFragmentRelationDetail         `json:"dependences"`
@@ -20,11 +21,10 @@ const (
 func CouchdbArticleGenerateDocument(articleID int) int {
 
 	article := GetArticleByID(articleID, 0)
-	couchdbGetAuth()
 	if article.ID == 0 {
 		return 1
 	}
-	var articleDocument articleDocument
+	var articleDocument ArticleDocument
 	articleDocument.Article = article
 	articleFragmentRelationDocumentDetails := queryArticleFragmentRelationDocumentDetails(articleID)
 	articleDocument.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
@@ -36,4 +36,13 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 	articleDocumentBody, _ := json.Marshal(articleDocument)
 	code := couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
 	return code
+}
+
+//CouchdbGetArticleDocumentByArticleID 通过文章ID查询文档
+func CouchdbGetArticleDocumentByArticleID(articleID int) ArticleDocument {
+	articleIDStr := strconv.Itoa(articleID)
+	articleDocumentBytes := couchdbQueryDocByID(articleCouchdbName, articleIDStr)
+	var articleDocument ArticleDocument
+	json.Unmarshal(articleDocumentBytes, &articleDocument)
+	return articleDocument
 }
