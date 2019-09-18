@@ -12,7 +12,7 @@ type TagTagRelation struct {
 const (
 	queryTagTagRelationsSQL = "select a.id, a.tag_id, a.relate_tag_id, a.relate_type, b.name from tag_tag_relation a inner join tag b on a.relate_tag_id=b.id "
 	addTagTagRelationSQL    = "insert into tag_tag_relation(tag_id, relate_tag_id, relate_type) values($1, $2, $3)"
-	updateTagTagRelationSQL = "update tag_tag_relation tag_id=$1, relate_tag_id=$2, relate_type=$3 where id=$4"
+	updateTagTagRelationSQL = "update tag_tag_relation set tag_id=$1, relate_tag_id=$2, relate_type=$3 where id=$4"
 	deleteTagTagRelationSQL = "delete from tag_tag_relation where id=$1"
 )
 

@@ -9,7 +9,7 @@ type Article struct {
 const (
 	queryArticlesSQL     = "select id, title from article "
 	addArticleSQL        = "insert into article(title)values($1)"
-	updateArticleSQL     = "update article title=$1 where id=$4"
+	updateArticleSQL     = "update article set title=$1 where id=$4"
 	deleteArticleByIDSQL = "delete from article where id=$1"
 )
 

@@ -10,7 +10,7 @@ type Fragment struct {
 const (
 	queryFragmentsSQL     = "select id, title, content from fragment "
 	addFragmentSQL        = "insert into fragment(title, content)values($1, $2)"
-	updateFragmentSQL     = "update fragment title=$1, content=$2 where id=$3"
+	updateFragmentSQL     = "update fragment set title=$1, content=$2 where id=$3"
 	deleteFragmentByIDSQL = "delete from fragment where id=$1"
 )
 

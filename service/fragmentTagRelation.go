@@ -10,7 +10,7 @@ type FragmentTagRelation struct {
 const (
 	queryFragmentTagRelationsSQL = "select id, fragment_id, tag_id from fragment_tag_relation "
 	addFragmentTagRelationSQL    = "insert into fragment_tag_relation(fragment_id, tag_id) values($1, $2)"
-	updateFragmentTagRelationSQL = "update fragment_tag_relation fragment_id=$1, tag_id=$2 where id=$3"
+	updateFragmentTagRelationSQL = "update fragment_tag_relation set fragment_id=$1, tag_id=$2 where id=$3"
 	deleteFragmentTagRelationSQL = "delete from fragment_tag_relation where id=$1"
 )
 
