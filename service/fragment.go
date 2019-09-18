@@ -24,6 +24,10 @@ func queryFragments(fragment Fragment, lastID int) []Fragment {
 		whereSQL += " id=" + intToSafeString(fragment.ID) + " and "
 	}
 
+	if fragment.Title != "" {
+		whereSQL += " title like '" + strToSafeString(fragment.Title) + "%' and "
+	}
+
 	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
 	rows, err := connection.Query(queryFragmentsSQL + whereSQL)
 	var fragments []Fragment

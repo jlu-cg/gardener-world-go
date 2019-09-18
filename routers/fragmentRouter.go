@@ -10,10 +10,9 @@ func initFragment(app *iris.Application, crs context.Handler) {
 	fragmentV1 := app.Party("/fragment/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		fragmentV1.Post("/list", func(ctx iris.Context) {
-			var queryFragment service.Fragment
+			var queryFragment service.QueryFragment
 			ctx.ReadJSON(&queryFragment)
-			lastID := postIntVal("lastId", 0, ctx)
-			fragments := service.GetFragments(queryFragment, lastID)
+			fragments := service.GetFragments(queryFragment)
 			ctx.JSON(fragments)
 		})
 

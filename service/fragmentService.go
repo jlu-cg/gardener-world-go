@@ -1,11 +1,14 @@
 package service
 
+//QueryFragment 碎片
+type QueryFragment struct {
+	Fragment
+	LastID int `json:"lastId"`
+}
+
 //GetFragments 查询碎片
-func GetFragments(fragment Fragment, lastID int) []Fragment {
-	if lastID < 0 {
-		lastID = 0
-	}
-	fragments := queryFragments(fragment, lastID)
+func GetFragments(fragment QueryFragment) []Fragment {
+	fragments := queryFragments(fragment.Fragment, fragment.LastID)
 	return fragments
 }
 
