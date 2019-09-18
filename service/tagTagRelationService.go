@@ -1,5 +1,10 @@
 package service
 
+//GetTagTagRelations 查询标签关联关系
+func GetTagTagRelations(relation TagTagRelation) []TagTagRelation {
+	return queryTagTagRelations(relation)
+}
+
 //AddTagTagRelation 添加标签间关联
 func AddTagTagRelation(relation TagTagRelation) int {
 	return addTagTagRelation(relation)
