@@ -21,15 +21,18 @@ func queryTags(tag Tag, lastID int) []Tag {
 	connection := connect()
 	defer release(connection)
 
-	whereSQL := " where "
+	whereSQL := " where 1=1 "
 
 	if tag.Name != "" {
-		whereSQL += " name like '" + strToSafeString(tag.Name) + "%' and "
+		whereSQL += " and name like '" + strToSafeString(tag.Name) + "%' "
 	}
 	if tag.ID > 0 {
-		whereSQL += " id=" + intToSafeString(tag.ID) + " and "
+		whereSQL += " and id=" + intToSafeString(tag.ID)
 	}
-	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
+	if tag.TagType > 0 {
+		whereSQL += " and tag_type=" + intToSafeString(tag.ID)
+	}
+	whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
 	rows, err := connection.Query(queryTagsSQL + whereSQL)
 	if err != nil {
 		panic(err)
