@@ -29,7 +29,7 @@ const (
 	couchdbAuthFormat           = "%s/_session"
 	couchdbDatabaseOpFormat     = "%s/%s"
 	couchdbDocumentCreateFormat = "%s/%s/%s"
-	couchdbDocumentUpdateFormat = "%s/%s/%s/"
+	couchdbDocumentUpdateFormat = "%s/%s/%s"
 	couchdbDocumentDeleteFormat = "%s/%s/%s?rev=%s"
 	couchdbDocumentQueryFormat  = "%s/%s/%s"
 )

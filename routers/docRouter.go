@@ -16,7 +16,11 @@ func InitDocRouter(app *iris.Application, crs context.Handler) {
 
 	initFragment(app, crs)
 
+	initFragmentTagRelation(app, crs)
+
 	initArticle(app, crs)
+
+	initArticleTagRelation(app, crs)
 
 	initArticleFragmentRelation(app, crs)
 

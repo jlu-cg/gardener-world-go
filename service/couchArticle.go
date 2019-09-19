@@ -8,6 +8,7 @@ import (
 
 //ArticleDocument 文章文档
 type ArticleDocument struct {
+	Rev                                    string                                  `json:"_rev"`
 	Article                                Article                                 `json:"article"`
 	ArticleFragmentRelationDocumentDetails []ArticleFragmentRelationDocumentDetail `json:"relations"`
 	ArticleArticleRelationDetails          []ArticleArticleRelationDetail          `json:"dependences"`
@@ -24,6 +25,7 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 	if article.ID == 0 {
 		return 1
 	}
+
 	var articleDocument ArticleDocument
 	articleDocument.Article = article
 	articleFragmentRelationDocumentDetails := queryArticleFragmentRelationDocumentDetails(articleID)
@@ -33,8 +35,16 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 	articleArticleRelationDetails := queryArticleArticleRelationDetails(detail)
 	articleDocument.ArticleArticleRelationDetails = articleArticleRelationDetails
 	articleIDStr := strconv.Itoa(articleID)
-	articleDocumentBody, _ := json.Marshal(articleDocument)
-	code := couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
+	oldArticleDocument := CouchdbGetArticleDocumentByArticleID(articleID)
+	var code int
+	if oldArticleDocument.Rev != "" {
+		articleDocument.Rev = oldArticleDocument.Rev
+		articleDocumentBody, _ := json.Marshal(articleDocument)
+		code = couchdbUpdateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
+	} else {
+		articleDocumentBody, _ := json.Marshal(articleDocument)
+		code = couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
+	}
 	return code
 }
 

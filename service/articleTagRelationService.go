@@ -2,7 +2,14 @@ package service
 
 //QueryArticleTagRelations 查询标签对应的文章
 func QueryArticleTagRelations(relation ArticleTagRelation) []ArticleTagRelation {
-	return queryArticleTagRelations(relation)
+	if relation.ArticleID > 0 {
+		return queryTagArticleTagRelations(relation)
+	}
+	if relation.TagID > 0 {
+		return queryArticleTagRelations(relation)
+	}
+	var articleTagRelations []ArticleTagRelation
+	return articleTagRelations
 }
 
 //SaveArticleTagRelation 保存文章标签关系

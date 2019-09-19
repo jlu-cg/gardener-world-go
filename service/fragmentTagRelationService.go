@@ -1,13 +1,16 @@
 package service
 
-//AddFragmentTagRelation 添加碎片和标签的关系
-func AddFragmentTagRelation(relation FragmentTagRelation) int {
-	return addFragmentTagRelation(relation)
+//QueryFragmentTagRelations 查询碎片标签关系
+func QueryFragmentTagRelations(relation FragmentTagRelation) []FragmentTagRelation {
+	return queryFragmentTagRelations(relation)
 }
 
-//UpdateFragmentTagRelation 更新碎片和标签的关系
-func UpdateFragmentTagRelation(relation FragmentTagRelation) int {
-	return updateFragmentTagRelation(relation)
+//SaveFragmentTagRelation 保存碎片和标签的关系
+func SaveFragmentTagRelation(relation FragmentTagRelation) int {
+	if relation.ID > 0 {
+		return updateFragmentTagRelation(relation)
+	}
+	return addFragmentTagRelation(relation)
 }
 
 //DeleteFragmentTagRelationByID 删除碎片和标签的关系
