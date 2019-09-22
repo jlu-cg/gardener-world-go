@@ -2,9 +2,6 @@ package service
 
 //GetArticles 查询碎片
 func GetArticles(article Article, lastID int) []Article {
-	if lastID < 0 {
-		lastID = 0
-	}
 	articles := queryArticles(article, lastID)
 	return articles
 }

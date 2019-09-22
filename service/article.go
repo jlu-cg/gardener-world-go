@@ -17,13 +17,15 @@ func queryArticles(article Article, lastID int) []Article {
 	connection := connect()
 	defer release(connection)
 
-	whereSQL := " where "
+	whereSQL := " where 1=1 "
 
 	if article.ID > 0 {
-		whereSQL += " id=" + intToSafeString(article.ID) + " and "
+		whereSQL += " and id=" + intToSafeString(article.ID)
 	}
 
-	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
+	if lastID >= 0 {
+		whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
+	}
 	rows, err := connection.Query(queryArticlesSQL + whereSQL)
 	defer rows.Close()
 	var articles []Article

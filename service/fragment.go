@@ -18,17 +18,19 @@ func queryFragments(fragment Fragment, lastID int) []Fragment {
 	connection := connect()
 	defer release(connection)
 
-	whereSQL := " where "
+	whereSQL := " where 1=1 "
 
 	if fragment.ID > 0 {
-		whereSQL += " id=" + intToSafeString(fragment.ID) + " and "
+		whereSQL += " and id=" + intToSafeString(fragment.ID)
 	}
 
 	if fragment.Title != "" {
-		whereSQL += " title like '" + strToSafeString(fragment.Title) + "%' and "
+		whereSQL += " and title like '" + strToSafeString(fragment.Title) + "%' "
 	}
 
-	whereSQL += " id>" + intToSafeString(lastID) + " limit 20 "
+	if lastID >= 0 {
+		whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
+	}
 	rows, err := connection.Query(queryFragmentsSQL + whereSQL)
 	var fragments []Fragment
 	if rows == nil {
