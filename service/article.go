@@ -121,7 +121,5 @@ func deleteArticleByID(id int) int {
 		return -1
 	}
 
-	var deleteArticleTagRelation ArticleTagRelation
-	deleteArticleTagRelation.ArticleID = id
-	return deleteArticleTagRelations(deleteArticleTagRelation)
+	return 0
 }

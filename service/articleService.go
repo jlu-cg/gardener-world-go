@@ -27,8 +27,15 @@ func GetArticleByID(articleID int, tagID int) Article {
 
 //DeleteArticleByID 删除碎片
 func DeleteArticleByID(articleID int) int {
-	if articleID > 0 {
-		return deleteArticleByID(articleID)
+	if articleID <= 0 {
+		return 0
 	}
-	return 0
+
+	code := deleteArticleByID(articleID)
+
+	var deleteArticleTagRelation ArticleTagRelation
+	deleteArticleTagRelation.ArticleID = articleID
+	code = deleteArticleTagRelations(deleteArticleTagRelation)
+
+	return code
 }

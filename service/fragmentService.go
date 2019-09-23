@@ -33,8 +33,13 @@ func GetFragmentByID(fragmentID int) Fragment {
 
 //DeleteFragmentByID 删除碎片
 func DeleteFragmentByID(fragmentID int) int {
-	if fragmentID > 0 {
-		return deleteFragmentByID(fragmentID)
+	if fragmentID <= 0 {
+		return 0
 	}
-	return 0
+	code := deleteFragmentByID(fragmentID)
+
+	var deleteFragmentTagRelation FragmentTagRelation
+	deleteFragmentTagRelation.FragmentID = fragmentID
+	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
+	return code
 }

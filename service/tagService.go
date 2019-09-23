@@ -30,5 +30,22 @@ func GetTagByID(id int) Tag {
 //DeleteTagByID 通过ID删除标签
 func DeleteTagByID(id int) int {
 	code := deleteTagByID(id)
+
+	var deleteArticleTagRelation ArticleTagRelation
+	deleteArticleTagRelation.TagID = id
+	code = DeleteArticleTagRelations(deleteArticleTagRelation)
+
+	var deleteFragmentTagRelation FragmentTagRelation
+	deleteFragmentTagRelation.TagID = id
+	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
+
+	var deleteTagTagRelation TagTagRelation
+	deleteTagTagRelation.TagID = id
+	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
+
+	deleteTagTagRelation.TagID = -1
+	deleteTagTagRelation.RelateTagID = id
+	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
+
 	return code
 }

@@ -102,21 +102,5 @@ func deleteTagByID(id int) int {
 		return -1
 	}
 
-	var deleteArticleTagRelation ArticleTagRelation
-	deleteArticleTagRelation.TagID = id
-	code := DeleteArticleTagRelations(deleteArticleTagRelation)
-
-	var deleteFragmentTagRelation FragmentTagRelation
-	deleteFragmentTagRelation.TagID = id
-	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
-
-	var deleteTagTagRelation TagTagRelation
-	deleteTagTagRelation.TagID = id
-	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
-
-	deleteTagTagRelation.TagID = -1
-	deleteTagTagRelation.RelateTagID = id
-	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
-
-	return code
+	return 0
 }

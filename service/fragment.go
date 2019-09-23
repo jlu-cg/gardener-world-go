@@ -99,5 +99,6 @@ func deleteFragmentByID(id int) int {
 	if err != nil {
 		return -1
 	}
+
 	return 0
 }
