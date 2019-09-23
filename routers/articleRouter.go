@@ -43,6 +43,12 @@ func initArticle(app *iris.Application, crs context.Handler) {
 			ctx.JSON(result)
 		})
 
+		articleV1.Get("/document/cancel", func(ctx iris.Context) {
+			articleID := getIntVal("articleId", 0, ctx)
+			result := service.CouchdbArticleCancelDocument(articleID)
+			ctx.JSON(result)
+		})
+
 		articleV1.Get("/document/detail", func(ctx iris.Context) {
 			articleID := getIntVal("articleId", 0, ctx)
 			result := service.CouchdbGetArticleDocumentByArticleID(articleID)

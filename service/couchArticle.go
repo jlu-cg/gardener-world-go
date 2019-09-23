@@ -8,7 +8,11 @@ import (
 
 //ArticleDocument 文章文档
 type ArticleDocument struct {
-	Rev                                    string                                  `json:"_rev"`
+	ArticleDocumentAdd
+	Rev string `json:"_rev"`
+}
+
+type ArticleDocumentAdd struct {
 	Article                                Article                                 `json:"article"`
 	ArticleFragmentRelationDocumentDetails []ArticleFragmentRelationDocumentDetail `json:"relations"`
 	ArticleArticleRelationDetails          []ArticleArticleRelationDetail          `json:"dependences"`
@@ -26,26 +30,58 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 		return 1
 	}
 
-	var articleDocument ArticleDocument
-	articleDocument.Article = article
+	article.Status = 1
+	article.ID = articleID
+	SaveArticle(article)
+
+	articleIDStr := strconv.Itoa(articleID)
+	oldArticleDocument := CouchdbGetArticleDocumentByArticleID(articleID)
+
 	articleFragmentRelationDocumentDetails := queryArticleFragmentRelationDocumentDetails(articleID)
-	articleDocument.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
 	var detail ArticleArticleRelationDetail
 	detail.ArticleID = articleID
 	articleArticleRelationDetails := queryArticleArticleRelationDetails(detail)
-	articleDocument.ArticleArticleRelationDetails = articleArticleRelationDetails
-	articleIDStr := strconv.Itoa(articleID)
-	oldArticleDocument := CouchdbGetArticleDocumentByArticleID(articleID)
+
 	var code int
 	if oldArticleDocument.Rev != "" {
+		var articleDocument ArticleDocument
+		articleDocument.Article = article
+		articleDocument.ArticleArticleRelationDetails = articleArticleRelationDetails
+		articleDocument.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
 		articleDocument.Rev = oldArticleDocument.Rev
 		articleDocumentBody, _ := json.Marshal(articleDocument)
 		code = couchdbUpdateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
 	} else {
-		articleDocumentBody, _ := json.Marshal(articleDocument)
+		var articleDocumentAdd ArticleDocumentAdd
+		articleDocumentAdd.Article = article
+		articleDocumentAdd.ArticleArticleRelationDetails = articleArticleRelationDetails
+		articleDocumentAdd.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
+		articleDocumentBody, _ := json.Marshal(articleDocumentAdd)
 		code = couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
 	}
 	return code
+}
+
+func CouchdbArticleCancelDocument(articleID int) int {
+
+	if articleID == 0 {
+		return 1
+	}
+
+	var article Article
+	article.Status = 2
+	article.ID = articleID
+	SaveArticle(article)
+
+	articleIDStr := strconv.Itoa(articleID)
+	oldArticleDocument := CouchdbGetArticleDocumentByArticleID(articleID)
+	var code int
+	if oldArticleDocument.Rev != "" {
+		code = couchdbDeleteDoc(articleCouchdbName, articleIDStr, oldArticleDocument.Rev)
+		return code
+	} else {
+		return 1
+	}
 }
 
 //CouchdbGetArticleDocumentByArticleID 通过文章ID查询文档

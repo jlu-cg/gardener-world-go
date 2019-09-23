@@ -1,15 +1,18 @@
 package service
 
+import "fmt"
+
 //Article 文章
 type Article struct {
-	ID    int    `json:"id"`
-	Title string `json:"title"`
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Status int    `json:"status"`
 }
 
 const (
-	queryArticlesSQL     = "select id, title from article "
+	queryArticlesSQL     = "select id, title, status from article "
 	addArticleSQL        = "insert into article(title)values($1)"
-	updateArticleSQL     = "update article set title=$1 where id=$4"
+	updateArticleSQL     = "update article set %s where id=$1"
 	deleteArticleByIDSQL = "delete from article where id=$1"
 )
 
@@ -38,7 +41,7 @@ func queryArticles(article Article, lastID int) []Article {
 
 	var temp Article
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Title)
+		rows.Scan(&temp.ID, &temp.Title, &temp.Status)
 		articles = append(articles, temp)
 	}
 
@@ -61,14 +64,37 @@ func addArticle(article Article) int {
 }
 
 func updateArticle(article Article) int {
+
+	hasUpdate := false
+
+	updateFieldSQL := ""
+
+	if article.Title != "" {
+		hasUpdate = true
+		updateFieldSQL += " title=" + strToSafeString(article.Title)
+	}
+
+	if article.Status > 0 {
+		hasUpdate = true
+		if updateFieldSQL == "" {
+			updateFieldSQL += " status=" + intToSafeString(article.Status)
+		} else {
+			updateFieldSQL += ", status=" + intToSafeString(article.Status)
+		}
+	}
+
+	if !hasUpdate {
+		return -1
+	}
+
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(updateArticleSQL)
+	stmt, err := connection.Prepare(fmt.Sprintf(updateArticleSQL, updateFieldSQL))
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(article.Title, article.ID)
+	_, err = stmt.Exec(article.ID)
 	if err != nil {
 		return -1
 	}
