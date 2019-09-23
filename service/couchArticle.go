@@ -62,6 +62,7 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 	return code
 }
 
+//CouchdbArticleCancelDocument 取消文章发布
 func CouchdbArticleCancelDocument(articleID int) int {
 
 	if articleID == 0 {

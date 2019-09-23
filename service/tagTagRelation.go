@@ -22,10 +22,10 @@ func queryTagTagRelations(relation TagTagRelation) []TagTagRelation {
 
 	whereSQL := " where 1=1 "
 	if relation.TagID > 0 {
-		whereSQL += " a.tag_id= '" + intToSafeString(relation.TagID)
+		whereSQL += " and a.tag_id=" + intToSafeString(relation.TagID)
 	}
 	if relation.RelateType > 0 {
-		whereSQL += " a.relate_type= '" + intToSafeString(relation.RelateType)
+		whereSQL += " and a.relate_type=" + intToSafeString(relation.RelateType)
 	}
 
 	rows, err := connection.Query(queryTagTagRelationsSQL + whereSQL)
