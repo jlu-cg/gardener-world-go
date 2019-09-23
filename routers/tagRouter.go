@@ -29,5 +29,11 @@ func initTag(app *iris.Application, crs context.Handler) {
 			result := service.GetTagByID(tagID)
 			ctx.JSON(result)
 		})
+
+		tagV1.Get("/delete", func(ctx iris.Context) {
+			tagID := getIntVal("tagId", 0, ctx)
+			result := service.DeleteTagByID(tagID)
+			ctx.JSON(result)
+		})
 	}
 }
