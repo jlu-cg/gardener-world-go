@@ -17,5 +17,7 @@ func UpdateArticleFragmentRelations(details []ArticleFragmentRelationDetail) int
 
 //DeleteArticleFragmentRelationByID 删除关联关系
 func DeleteArticleFragmentRelationByID(id int) int {
-	return deleteArticleFragmentRelationByID(id)
+	var relation ArticleFragmentRelationDetail
+	relation.ID = id
+	return deleteArticleFragmentRelations(relation)
 }

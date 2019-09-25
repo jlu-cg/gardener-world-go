@@ -11,12 +11,11 @@ type ArticleTagRelation struct {
 }
 
 const (
-	queryArticleTagRelationsSQL      = "select a.id, a.article_id, a.tag_id, b.title from article_tag_relation a inner join article b on a.article_id=b.id "
-	queryTagArticleTagRelationsSQL   = "select a.id, a.article_id, a.tag_id, b.name, b.tag_type from article_tag_relation a inner join tag b on a.tag_id=b.id "
-	addArticleTagRelationSQL         = "insert into article_tag_relation(article_id, tag_id) values($1, $2)"
-	updateArticleTagRelationSQL      = "update article_tag_relation article_id=$1, tag_id=$2 where id=$3"
-	deleteArticleTagRelationSQL      = "delete from article_tag_relation where id=$1"
-	deleteArticleTagRelationOtherSQL = "delete from article_tag_relation "
+	queryArticleTagRelationsSQL    = "select a.id, a.article_id, a.tag_id, b.title from article_tag_relation a inner join article b on a.article_id=b.id "
+	queryTagArticleTagRelationsSQL = "select a.id, a.article_id, a.tag_id, b.name, b.tag_type from article_tag_relation a inner join tag b on a.tag_id=b.id "
+	addArticleTagRelationSQL       = "insert into article_tag_relation(article_id, tag_id) values($1, $2)"
+	updateArticleTagRelationSQL    = "update article_tag_relation article_id=$1, tag_id=$2 where id=$3"
+	deleteArticleTagRelationSQL    = "delete from article_tag_relation "
 )
 
 func queryArticleTagRelations(relation ArticleTagRelation) []ArticleTagRelation {
@@ -134,6 +133,11 @@ func deleteArticleTagRelations(relation ArticleTagRelation) int {
 
 	hasCondition := false
 	whereSQL := " where 1=1 "
+
+	if relation.ID > 0 {
+		whereSQL += " and id=" + intToSafeString(relation.ID)
+		hasCondition = true
+	}
 	if relation.ArticleID > 0 {
 		whereSQL += " and article_id=" + intToSafeString(relation.ArticleID)
 		hasCondition = true
@@ -151,7 +155,7 @@ func deleteArticleTagRelations(relation ArticleTagRelation) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteArticleTagRelationOtherSQL + whereSQL)
+	stmt, err := connection.Prepare(deleteArticleTagRelationSQL + whereSQL)
 	if err != nil {
 		return -1
 	}

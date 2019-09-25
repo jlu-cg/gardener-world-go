@@ -15,7 +15,9 @@ func SaveFragmentTagRelation(relation FragmentTagRelation) int {
 
 //DeleteFragmentTagRelationByID 删除碎片和标签的关系
 func DeleteFragmentTagRelationByID(id int) int {
-	return deleteFragmentTagRelationByID(id)
+	var relation FragmentTagRelation
+	relation.ID = id
+	return deleteFragmentTagRelations(relation)
 }
 
 //DeleteFragmentTagRelations 删除碎片和标签的关系

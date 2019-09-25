@@ -22,10 +22,15 @@ func SaveFragment(fragment Fragment) int {
 	return 0
 }
 
-//GetFragmentByID 查询碎片
-func GetFragmentByID(fragmentID int) Fragment {
+//QueryFragmentByID 查询碎片
+func QueryFragmentByID(fragmentID int) Fragment {
 	if fragmentID > 0 {
-		return queryFragmentByID(fragmentID)
+		var queryFragment Fragment
+		queryFragment.ID = fragmentID
+		fragments := queryFragments(queryFragment, 0)
+		if len(fragments) > 0 {
+			return fragments[0]
+		}
 	}
 	var fragment Fragment
 	return fragment

@@ -19,12 +19,18 @@ func SaveTag(tag Tag) int {
 	return 0
 }
 
-//GetTagByID 通过ID查询
-func GetTagByID(id int) Tag {
-	var queryTag Tag
-	queryTag.ID = id
-	tags := queryTags(queryTag, 0)
-	return tags[0]
+//QueryTagByID 通过ID查询
+func QueryTagByID(tagID int) Tag {
+	if tagID > 0 {
+		var queryTag Tag
+		queryTag.ID = tagID
+		tags := queryTags(queryTag, 0)
+		if len(tags) > 0 {
+			return tags[0]
+		}
+	}
+	var tag Tag
+	return tag
 }
 
 //DeleteTagByID 通过ID删除标签

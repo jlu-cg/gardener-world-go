@@ -80,13 +80,6 @@ func updateFragment(fragment Fragment) int {
 	return 0
 }
 
-func queryFragmentByID(fragmentID int) Fragment {
-	var fragment Fragment
-	fragment.ID = fragmentID
-	fragments := queryFragments(fragment, 0)
-	return fragments[0]
-}
-
 func deleteFragmentByID(id int) int {
 	connection := connect()
 	defer release(connection)

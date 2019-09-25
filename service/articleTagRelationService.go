@@ -22,7 +22,9 @@ func SaveArticleTagRelation(relation ArticleTagRelation) int {
 
 //DeleteArticleTagRelationByID 删除文章标签关系
 func DeleteArticleTagRelationByID(id int) int {
-	return deleteArticleTagRelationByID(id)
+	var relation ArticleTagRelation
+	relation.ID = id
+	return deleteArticleTagRelations(relation)
 }
 
 //DeleteArticleTagRelations 删除文章标签关系

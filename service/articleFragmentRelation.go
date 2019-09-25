@@ -22,7 +22,7 @@ const (
 	queryArticleFragmentRelationDetailsSQL         = "select a.id, a.article_id, a.position, b.id, b.title from article_fragment_relation a inner join fragment b on a.fragment_id=b.id "
 	queryArticleFragmentRelationDocumentDetailsSQL = "select a.id, a.position, b.id, b.title, b.content from article_fragment_relation a inner join fragment b on a.fragment_id=b.id where a.article_id=$1 order by a.position asc"
 	addArticleFragmentRelationSQL                  = "insert into article_fragment_relation(article_id, fragment_id, position)values($1, $2, $3)"
-	deleteArticleFragmentRelationSQL               = "delete from article_fragment_relation where id=$1"
+	deleteArticleFragmentRelationSQL               = "delete from article_fragment_relation"
 	updateArticleFragmentRelationPosSQL            = "update article_fragment_relation set position=$1 where id=$2"
 	queryArticleFragmentRelationDetailByIDSQL      = "select id, article_id, fragment_id, position from article_fragment_relation where id=$1"
 )
@@ -98,7 +98,19 @@ func updateArticleFragmentRelations(details []ArticleFragmentRelationDetail) int
 	return 0
 }
 
-func deleteArticleFragmentRelationByID(id int) int {
+func deleteArticleFragmentRelations(relation ArticleFragmentRelationDetail) int {
+	hasCondition := false
+	whereSQL := " where 1=1 "
+
+	if relation.ID > 0 {
+		whereSQL += " and id=" + intToSafeString(relation.ID)
+		hasCondition = true
+	}
+
+	if !hasCondition {
+		return -1
+	}
+
 	connection := connect()
 	defer release(connection)
 
@@ -106,7 +118,7 @@ func deleteArticleFragmentRelationByID(id int) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(id)
+	_, err = stmt.Exec()
 	if err != nil {
 		return -1
 	}

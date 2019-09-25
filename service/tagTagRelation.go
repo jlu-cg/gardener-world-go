@@ -10,11 +10,10 @@ type TagTagRelation struct {
 }
 
 const (
-	queryTagTagRelationsSQL      = "select a.id, a.tag_id, a.relate_tag_id, a.relate_type, b.name from tag_tag_relation a inner join tag b on a.relate_tag_id=b.id "
-	addTagTagRelationSQL         = "insert into tag_tag_relation(tag_id, relate_tag_id, relate_type) values($1, $2, $3)"
-	updateTagTagRelationSQL      = "update tag_tag_relation set tag_id=$1, relate_tag_id=$2, relate_type=$3 where id=$4"
-	deleteTagTagRelationSQL      = "delete from tag_tag_relation where id=$1"
-	deleteTagTagRelationOtherSQL = "delete from tag_tag_relation"
+	queryTagTagRelationsSQL = "select a.id, a.tag_id, a.relate_tag_id, a.relate_type, b.name from tag_tag_relation a inner join tag b on a.relate_tag_id=b.id "
+	addTagTagRelationSQL    = "insert into tag_tag_relation(tag_id, relate_tag_id, relate_type) values($1, $2, $3)"
+	updateTagTagRelationSQL = "update tag_tag_relation set tag_id=$1, relate_tag_id=$2, relate_type=$3 where id=$4"
+	deleteTagTagRelationSQL = "delete from tag_tag_relation"
 )
 
 func queryTagTagRelations(relation TagTagRelation) []TagTagRelation {
@@ -103,6 +102,11 @@ func deleteTagTagRelations(relation TagTagRelation) int {
 
 	hasCondition := false
 	whereSQL := " where 1=1 "
+	if relation.ID > 0 {
+		whereSQL += " and id=" + intToSafeString(relation.ID)
+		hasCondition = true
+	}
+
 	if relation.TagID > 0 {
 		whereSQL += " and tag_id=" + intToSafeString(relation.TagID)
 		hasCondition = true
@@ -120,7 +124,7 @@ func deleteTagTagRelations(relation TagTagRelation) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteTagTagRelationOtherSQL + whereSQL)
+	stmt, err := connection.Prepare(deleteTagTagRelationSQL + whereSQL)
 	if err != nil {
 		return -1
 	}

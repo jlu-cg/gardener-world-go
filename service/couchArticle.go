@@ -25,7 +25,7 @@ const (
 //CouchdbArticleGenerateDocument 生成文档数据
 func CouchdbArticleGenerateDocument(articleID int) int {
 
-	article := GetArticleByID(articleID, 0)
+	article := QueryArticleByID(articleID)
 	if article.ID == 0 {
 		return 1
 	}

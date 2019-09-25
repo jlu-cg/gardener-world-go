@@ -26,8 +26,7 @@ func initArticle(app *iris.Application, crs context.Handler) {
 
 		articleV1.Get("/detail", func(ctx iris.Context) {
 			articleID := getIntVal("articleId", 0, ctx)
-			tagID := getIntVal("tagId", 0, ctx)
-			result := service.GetArticleByID(articleID, tagID)
+			result := service.QueryArticleByID(articleID)
 			ctx.JSON(result)
 		})
 

@@ -100,13 +100,6 @@ func updateArticle(article Article) int {
 	return 0
 }
 
-func queryArticleByID(articleID int) Article {
-	var article Article
-	article.ID = articleID
-	articles := queryArticles(article, 0)
-	return articles[0]
-}
-
 func deleteArticleByID(id int) int {
 	connection := connect()
 	defer release(connection)

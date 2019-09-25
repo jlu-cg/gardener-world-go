@@ -17,7 +17,9 @@ func UpdateTagTagRelation(relation TagTagRelation) int {
 
 //DeleteTagTagRelationByID 删除标签间关联
 func DeleteTagTagRelationByID(id int) int {
-	return deleteTagTagRelationByID(id)
+	var relation TagTagRelation
+	relation.ID = id
+	return deleteTagTagRelations(relation)
 }
 
 //DeleteTagTagRelations 删除标签间关联

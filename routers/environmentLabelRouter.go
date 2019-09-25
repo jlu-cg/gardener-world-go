@@ -26,13 +26,7 @@ func initEnvironmentLabel(app *iris.Application, crs context.Handler) {
 
 		environmentLabelV1.Get("/detail", func(ctx iris.Context) {
 			environmentLabelID := getIntVal("environmentLabelId", 0, ctx)
-			var queryEnvironmentLabel service.EnvironmentLabel
-			queryEnvironmentLabel.ID = environmentLabelID
-			var result service.EnvironmentLabel
-			labels := service.QueryEnvironmentLabels(queryEnvironmentLabel, 0)
-			if len(labels) > 0 {
-				result = labels[0]
-			}
+			result := service.QueryEnvironmentLabelByID(environmentLabelID)
 			ctx.JSON(result)
 		})
 

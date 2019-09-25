@@ -36,7 +36,7 @@ func initTag(app *iris.Application, crs context.Handler) {
 
 		tagV1.Get("/detail", func(ctx iris.Context) {
 			tagID := getIntVal("tagId", 0, ctx)
-			result := service.GetTagByID(tagID)
+			result := service.QueryTagByID(tagID)
 			ctx.JSON(result)
 		})
 

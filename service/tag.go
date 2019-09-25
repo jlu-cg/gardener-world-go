@@ -11,7 +11,6 @@ const (
 	queryTagsSQL     = "select id, name, tag_type from tag "
 	addTagSQL        = "insert into tag(name, tag_type)values($1, $2)"
 	updateTagSQL     = "update tag set name=$1, tag_type=$2 where id=$3"
-	queryTagByIDSQL  = "select id, name, tag_type from tag where id=$1"
 	deleteTagByIDSQL = "delete from tag where id=$1"
 )
 

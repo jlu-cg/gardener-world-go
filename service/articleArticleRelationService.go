@@ -17,5 +17,7 @@ func UpdateArticleArticleRelations(details []ArticleArticleRelationDetail) int {
 
 //DeleteArticleArticleRelationByID 删除依赖文章
 func DeleteArticleArticleRelationByID(id int) int {
-	return deleteArticleArticleRelationByID(id)
+	var relation ArticleArticleRelationDetail
+	relation.ID = id
+	return deleteArticleArticleRelations(relation)
 }
