@@ -12,7 +12,7 @@ func initTagTagRelation(app *iris.Application, crs context.Handler) {
 		tagTagRelationV1.Post("/list", func(ctx iris.Context) {
 			var queryTagTagRelation service.TagTagRelation
 			ctx.ReadJSON(&queryTagTagRelation)
-			tagTagRelations := service.GetTagTagRelations(queryTagTagRelation)
+			tagTagRelations := service.QueryTagTagRelations(queryTagTagRelation)
 			ctx.JSON(tagTagRelations)
 		})
 

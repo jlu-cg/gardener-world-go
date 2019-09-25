@@ -1,7 +1,7 @@
 package service
 
-//GetTags 查询标签列表
-func GetTags(queryTag Tag, lastID int) []Tag {
+//QueryTags 查询标签列表
+func QueryTags(queryTag Tag, lastID int) []Tag {
 	if lastID < 0 {
 		lastID = 0
 	}

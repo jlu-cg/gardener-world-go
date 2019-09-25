@@ -12,7 +12,7 @@ func initFragment(app *iris.Application, crs context.Handler) {
 		fragmentV1.Post("/list", func(ctx iris.Context) {
 			var queryFragment service.QueryFragment
 			ctx.ReadJSON(&queryFragment)
-			fragments := service.GetFragments(queryFragment)
+			fragments := service.QueryFragments(queryFragment)
 			ctx.JSON(fragments)
 		})
 

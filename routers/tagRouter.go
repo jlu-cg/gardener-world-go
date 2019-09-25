@@ -23,7 +23,7 @@ func initTag(app *iris.Application, crs context.Handler) {
 				"tagType": queryTag.TagType,
 			}).Info("/tag/v1/list")
 
-			tags := service.GetTags(queryTag, lastID)
+			tags := service.QueryTags(queryTag, lastID)
 			ctx.JSON(tags)
 		})
 

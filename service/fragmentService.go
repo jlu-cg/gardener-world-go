@@ -6,8 +6,8 @@ type QueryFragment struct {
 	LastID int `json:"lastId"`
 }
 
-//GetFragments 查询碎片
-func GetFragments(fragment QueryFragment) []Fragment {
+//QueryFragments 查询碎片
+func QueryFragments(fragment QueryFragment) []Fragment {
 	fragments := queryFragments(fragment.Fragment, fragment.LastID)
 	return fragments
 }

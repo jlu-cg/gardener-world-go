@@ -1,7 +1,7 @@
 package service
 
-//GetArticles 查询碎片
-func GetArticles(article Article, lastID int) []Article {
+//QueryArticles 查询碎片
+func QueryArticles(article Article, lastID int) []Article {
 	articles := queryArticles(article, lastID)
 	return articles
 }

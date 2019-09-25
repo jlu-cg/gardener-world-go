@@ -1,7 +1,7 @@
 package service
 
-//GetArticleArticleRelationDetails 查询依赖文章
-func GetArticleArticleRelationDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
+//QueryArticleArticleRelationDetails 查询依赖文章
+func QueryArticleArticleRelationDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {
 	return queryArticleArticleRelationDetails(detail)
 }
 

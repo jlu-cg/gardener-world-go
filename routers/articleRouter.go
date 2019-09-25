@@ -13,7 +13,7 @@ func initArticle(app *iris.Application, crs context.Handler) {
 			var queryArticle service.Article
 			ctx.ReadJSON(&queryArticle)
 			lastID := postIntVal("lastId", 0, ctx)
-			articles := service.GetArticles(queryArticle, lastID)
+			articles := service.QueryArticles(queryArticle, lastID)
 			ctx.JSON(articles)
 		})
 

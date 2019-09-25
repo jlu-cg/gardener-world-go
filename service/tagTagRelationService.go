@@ -1,7 +1,7 @@
 package service
 
-//GetTagTagRelations 查询标签关联关系
-func GetTagTagRelations(relation TagTagRelation) []TagTagRelation {
+//QueryTagTagRelations 查询标签关联关系
+func QueryTagTagRelations(relation TagTagRelation) []TagTagRelation {
 	return queryTagTagRelations(relation)
 }
 

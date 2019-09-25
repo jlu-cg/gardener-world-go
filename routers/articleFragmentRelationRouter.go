@@ -12,7 +12,7 @@ func initArticleFragmentRelation(app *iris.Application, crs context.Handler) {
 		articleFragmentRelationV1.Post("/list", func(ctx iris.Context) {
 			var queryArticleFragmentRelationDetail service.ArticleFragmentRelationDetail
 			ctx.ReadJSON(&queryArticleFragmentRelationDetail)
-			details := service.GetArticleFragmentRelationDetails(queryArticleFragmentRelationDetail)
+			details := service.QueryArticleFragmentRelationDetails(queryArticleFragmentRelationDetail)
 			ctx.JSON(details)
 		})
 

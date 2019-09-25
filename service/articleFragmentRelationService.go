@@ -1,7 +1,7 @@
 package service
 
-//GetArticleFragmentRelationDetails 查询关联碎片
-func GetArticleFragmentRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {
+//QueryArticleFragmentRelationDetails 查询关联碎片
+func QueryArticleFragmentRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {
 	return queryArticleFragmentRelationDetails(detail)
 }
 
