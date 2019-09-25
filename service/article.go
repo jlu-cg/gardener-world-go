@@ -71,16 +71,15 @@ func updateArticle(article Article) int {
 
 	if article.Title != "" {
 		hasUpdate = true
-		updateFieldSQL += " title=" + strToSafeString(article.Title)
+		updateFieldSQL += " title='" + strToSafeString(article.Title) + "' "
 	}
 
 	if article.Status > 0 {
 		hasUpdate = true
-		if updateFieldSQL == "" {
-			updateFieldSQL += " status=" + intToSafeString(article.Status)
-		} else {
-			updateFieldSQL += ", status=" + intToSafeString(article.Status)
+		if updateFieldSQL != "" {
+			updateFieldSQL += ","
 		}
+		updateFieldSQL += " status=" + intToSafeString(article.Status)
 	}
 
 	if !hasUpdate {

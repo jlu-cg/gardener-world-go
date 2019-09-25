@@ -4,6 +4,7 @@ import (
 	"github.com/gardener/gardener-world-go/service"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
+	"github.com/sirupsen/logrus"
 )
 
 func initTag(app *iris.Application, crs context.Handler) {
@@ -13,6 +14,15 @@ func initTag(app *iris.Application, crs context.Handler) {
 			var queryTag service.Tag
 			ctx.ReadJSON(&queryTag)
 			lastID := postIntVal("lastId", 0, ctx)
+
+			logrus.WithFields(logrus.Fields{
+				"method":  "post",
+				"lastId":  lastID,
+				"id":      queryTag.ID,
+				"name":    queryTag.Name,
+				"tagType": queryTag.TagType,
+			}).Info("/tag/v1/list")
+
 			tags := service.GetTags(queryTag, lastID)
 			ctx.JSON(tags)
 		})
