@@ -27,6 +27,8 @@ func InitDocRouter(app *iris.Application, crs context.Handler) {
 	initArticleArticleRelation(app, crs)
 
 	initEnvironmentLabel(app, crs)
+
+	initDetailIntroduction(app, crs)
 }
 
 func getIntVal(key string, defaultVal int, ctx iris.Context) int {

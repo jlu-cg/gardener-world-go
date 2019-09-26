@@ -11,10 +11,10 @@ type ArticleArticleRelationDetail struct {
 
 const (
 	queryArticleArticleRelationDetailsSQL = "select a.id, a.article_id, a.position, b.id, b.title from article_article_relation a inner join article b on a.relate_article_id=b.id "
-	addArticleArticleRelationSQL          = "insert into article_article_relation(article_id, relate_article_id, position)values($1, $2, $3)"
-	deleteArticleArticleRelationSQL       = "delete from article_article_relation"
-	updateArticleArticleRelationPosSQL    = "update article_article_relation set position=$1 where id=$2"
 	queryArticleArticleRelationByIDSQL    = "select id, article_id, relate_article_id, position from article_article_relation where id=$1"
+	addArticleArticleRelationSQL          = "insert into article_article_relation(article_id, relate_article_id, position)values($1, $2, $3)"
+	updateArticleArticleRelationPosSQL    = "update article_article_relation set position=$1 where id=$2"
+	deleteArticleArticleRelationSQL       = "delete from article_article_relation"
 )
 
 func queryArticleArticleRelationDetails(detail ArticleArticleRelationDetail) []ArticleArticleRelationDetail {

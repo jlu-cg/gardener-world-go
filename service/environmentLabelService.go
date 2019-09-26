@@ -29,6 +29,6 @@ func SaveEnvironmentLabel(label EnvironmentLabel) int {
 }
 
 //DeleteEnvironmentLabel 删除环境标签
-func DeleteEnvironmentLabel(label EnvironmentLabel) int {
-	return deleteEnvironmentLabel(label)
+func DeleteEnvironmentLabels(label EnvironmentLabel) int {
+	return deleteEnvironmentLabels(label)
 }

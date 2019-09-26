@@ -21,10 +21,10 @@ type ArticleFragmentRelationDocumentDetail struct {
 const (
 	queryArticleFragmentRelationDetailsSQL         = "select a.id, a.article_id, a.position, b.id, b.title from article_fragment_relation a inner join fragment b on a.fragment_id=b.id "
 	queryArticleFragmentRelationDocumentDetailsSQL = "select a.id, a.position, b.id, b.title, b.content from article_fragment_relation a inner join fragment b on a.fragment_id=b.id where a.article_id=$1 order by a.position asc"
-	addArticleFragmentRelationSQL                  = "insert into article_fragment_relation(article_id, fragment_id, position)values($1, $2, $3)"
-	deleteArticleFragmentRelationSQL               = "delete from article_fragment_relation"
-	updateArticleFragmentRelationPosSQL            = "update article_fragment_relation set position=$1 where id=$2"
 	queryArticleFragmentRelationDetailByIDSQL      = "select id, article_id, fragment_id, position from article_fragment_relation where id=$1"
+	addArticleFragmentRelationSQL                  = "insert into article_fragment_relation(article_id, fragment_id, position)values($1, $2, $3)"
+	updateArticleFragmentRelationPosSQL            = "update article_fragment_relation set position=$1 where id=$2"
+	deleteArticleFragmentRelationSQL               = "delete from article_fragment_relation"
 )
 
 func queryArticleFragmentRelationDetails(detail ArticleFragmentRelationDetail) []ArticleFragmentRelationDetail {

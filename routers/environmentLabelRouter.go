@@ -34,7 +34,7 @@ func initEnvironmentLabel(app *iris.Application, crs context.Handler) {
 			environmentLabelID := getIntVal("environmentLabelId", 0, ctx)
 			var deleteEnvironmentLabel service.EnvironmentLabel
 			deleteEnvironmentLabel.ID = environmentLabelID
-			result := service.DeleteEnvironmentLabel(deleteEnvironmentLabel)
+			result := service.DeleteEnvironmentLabels(deleteEnvironmentLabel)
 			ctx.JSON(result)
 		})
 	}

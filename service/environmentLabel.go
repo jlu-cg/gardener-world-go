@@ -107,7 +107,7 @@ func updateEnvironmentLabel(label EnvironmentLabel) int {
 	return 0
 }
 
-func deleteEnvironmentLabel(label EnvironmentLabel) int {
+func deleteEnvironmentLabels(label EnvironmentLabel) int {
 
 	hasUpdate := false
 	whereSQL := " where 1=1 "
