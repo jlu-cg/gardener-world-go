@@ -1,0 +1,16 @@
+package service
+
+//QueryIntroductionEnvironmentRelations 查询详细介绍和环境标签关系
+func QueryIntroductionEnvironmentRelations(relationDetail IntroductionEnvironmentRelationDetail) []IntroductionEnvironmentRelationDetail {
+	return queryIntroductionEnvironmentRelations(relationDetail)
+}
+
+//SaveIntroductionEnvironmentRelation 保存详细介绍和环境标签关系
+func SaveIntroductionEnvironmentRelation(relation IntroductionEnvironmentRelation) int {
+	return addIntroductionEnvironmentRelation(relation)
+}
+
+//DeleteIntroductionEnvironmentRelations 删除详细介绍和环境标签关系
+func DeleteIntroductionEnvironmentRelations(relation IntroductionEnvironmentRelation) int {
+	return deleteIntroductionEnvironmentRelations(relation)
+}
