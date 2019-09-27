@@ -28,7 +28,7 @@ func queryDetailIntroductions(introduction DetailIntroduction, lastID int) []Det
 	if lastID >= 0 {
 		whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
 	}
-	rows, err := connection.Query(queryArticlesSQL + whereSQL)
+	rows, err := connection.Query(queryDetailIntroductionsSQL + whereSQL)
 	defer rows.Close()
 	var introductions []DetailIntroduction
 	if rows == nil {

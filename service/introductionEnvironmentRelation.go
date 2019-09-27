@@ -13,7 +13,7 @@ type IntroductionEnvironmentRelationDetail struct {
 }
 
 const (
-	queryIntroductionEnvironmentRelationsSQL = "select a.id, a.detail_introduction_id, a.environment_label_id, b.name, b.version from introduction_environment_relation a inner join environment_label b on a.tag_id=b.id "
+	queryIntroductionEnvironmentRelationsSQL = "select a.id, a.detail_introduction_id, a.environment_label_id, b.name, b.version from introduction_environment_relation a inner join environment_label b on a.environment_label_id=b.id "
 	addIntroductionEnvironmentRelationSQL    = "insert into introduction_environment_relation(detail_introduction_id, environment_label_id) values($1, $2)"
 	deleteIntroductionEnvironmentRelationSQL = "delete from introduction_environment_relation "
 )

@@ -13,8 +13,8 @@ func initDetailIntroduction(app *iris.Application, crs context.Handler) {
 			var queryDetailIntroduction service.DetailIntroduction
 			ctx.ReadJSON(&queryDetailIntroduction)
 			lastID := postIntVal("lastId", 0, ctx)
-			environmentLabels := service.QueryDetailIntroductions(queryDetailIntroduction, lastID)
-			ctx.JSON(environmentLabels)
+			detailIntroductions := service.QueryDetailIntroductions(queryDetailIntroduction, lastID)
+			ctx.JSON(detailIntroductions)
 		})
 
 		detailIntroductionV1.Post("/save", func(ctx iris.Context) {
