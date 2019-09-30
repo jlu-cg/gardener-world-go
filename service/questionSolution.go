@@ -122,7 +122,7 @@ func deleteQuestionSolutions(solution QuestionSolution) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteQuestionSolutionSQL)
+	stmt, err := connection.Prepare(deleteQuestionSolutionSQL + whereSQL)
 	if err != nil {
 		return -1
 	}

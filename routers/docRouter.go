@@ -33,6 +33,8 @@ func InitDocRouter(app *iris.Application, crs context.Handler) {
 	initIntroductionEnvironmentRelation(app, crs)
 
 	initQuestion(app, crs)
+	initQuestionSolution(app, crs)
+	initQuestionSolutionRelation(app, crs)
 }
 
 func getIntVal(key string, defaultVal int, ctx iris.Context) int {
