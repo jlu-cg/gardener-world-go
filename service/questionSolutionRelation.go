@@ -1,21 +1,23 @@
 package service
 
 type QuestionSolutionRelation struct {
-	ID         int `json:"id"`
-	QuestionID int `json:"questionId"`
-	SolutionID int `json:"solutionId"`
+	ID           int `json:"id"`
+	QuestionID   int `json:"questionId"`
+	SolutionID   int `json:"solutionId"`
+	SolutionType int `json:"solutionType"`
+	Position     int `json:"position"`
 }
 
 type QuestionSolutionRelationDetail struct {
 	QuestionSolutionRelation
-	Content      string `json:"content"`
-	SolutionType int    `json:"solutionType"`
+	Summary string `json:"summary"`
 }
 
 const (
-	queryQuestionSolutionRelationDetailsSQL = "select a.id, a.question_id, a.solution_id, b.content, b.solution_type from question_solution_relation a inner join question_solution b on a.solutionId=b.id "
-	addQuestionSolutionRelationSQL          = "insert into question_solution_relation(question_id, solution_id)values($1, $2)"
-	deleteQuestionSolutionRelationSQL       = "delete from question_solution_relation where id=$1"
+	queryQuestionSolutionRelationDetailsSQL = "select a.id, a.question_id, a.solution_id, a.solution_type, a.position, b.summary from question_solution_relation a inner join question_solution b on a.solution_id=b.id "
+	addQuestionSolutionRelationSQL          = "insert into question_solution_relation(question_id, solution_id, solution_type, position)values($1, $2, $3, $4)"
+	updateQuestionSolutionRelationPosSQL    = "update question_solution_relation set position=$1 where id=$2"
+	deleteQuestionSolutionRelationSQL       = "delete from question_solution_relation "
 )
 
 func queryQuestionSolutionRelationDetails(detail QuestionSolutionRelationDetail) []QuestionSolutionRelationDetail {
@@ -23,7 +25,12 @@ func queryQuestionSolutionRelationDetails(detail QuestionSolutionRelationDetail)
 	hasCondition := false
 	whereSQL := " where 1=1 "
 	if detail.ID > 0 {
-		whereSQL += " and a.question_id=" + intToSafeString(detail.ID)
+		whereSQL += " and a.id=" + intToSafeString(detail.ID)
+		hasCondition = true
+	}
+
+	if detail.QuestionID > 0 {
+		whereSQL += " and a.question_id=" + intToSafeString(detail.QuestionID)
 		hasCondition = true
 	}
 
@@ -47,7 +54,7 @@ func queryQuestionSolutionRelationDetails(detail QuestionSolutionRelationDetail)
 
 	var temp QuestionSolutionRelationDetail
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.QuestionID, &temp.SolutionID, &temp.Content, &temp.SolutionType)
+		rows.Scan(&temp.ID, &temp.QuestionID, &temp.SolutionID, &temp.SolutionType, &temp.Position, &temp.Summary)
 		details = append(details, temp)
 	}
 
@@ -62,9 +69,27 @@ func addQuestionSolutionRelation(relation QuestionSolutionRelation) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(relation.QuestionID, relation.SolutionID)
+	_, err = stmt.Exec(relation.QuestionID, relation.SolutionID, relation.SolutionType, relation.Position)
 	if err != nil {
 		return -1
+	}
+	return 0
+}
+
+func updateQuestionSolutionRelations(details []QuestionSolutionRelationDetail) int {
+	connection := connect()
+	defer release(connection)
+
+	stmt, err := connection.Prepare(updateQuestionSolutionRelationPosSQL)
+	if err != nil {
+		return -1
+	}
+
+	for _, detail := range details {
+		_, err = stmt.Exec(detail.Position, detail.ID)
+		if err != nil {
+			return -1
+		}
 	}
 	return 0
 }

@@ -4,14 +4,14 @@ import "fmt"
 
 //QuestionSolution 问题解决方法
 type QuestionSolution struct {
-	ID           int    `json:"id"`
-	Content      string `json:"content"`
-	SolutionType int    `json:"solutionType"`
+	ID      int    `json:"id"`
+	Content string `json:"content"`
+	Summary string `json:"summary"`
 }
 
 const (
-	queryQuestionSolutionsSQL = "select id, content, solution_type from question_solution "
-	addQuestionSolutionSQL    = "insert into question_solution(content, solution_type)values($1, $2)"
+	queryQuestionSolutionsSQL = "select id, content, summary from question_solution "
+	addQuestionSolutionSQL    = "insert into question_solution(content, summary)values($1, $2)"
 	updateQuestionSolutionSQL = "update question_solution set %s where id=$1"
 	deleteQuestionSolutionSQL = "delete from question_solution "
 )
@@ -23,8 +23,8 @@ func queryQuestionSolutions(solution QuestionSolution, lastID int) []QuestionSol
 
 	whereSQL := " where 1=1 "
 
-	if solution.SolutionType > 0 {
-		whereSQL += " and solution_type=" + intToSafeString(solution.SolutionType)
+	if solution.Summary != "" {
+		whereSQL += " and summary='" + strToSafeString(solution.Summary) + "' "
 	}
 	if solution.ID > 0 {
 		whereSQL += " and id=" + intToSafeString(solution.ID)
@@ -47,7 +47,7 @@ func queryQuestionSolutions(solution QuestionSolution, lastID int) []QuestionSol
 
 	var temp QuestionSolution
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.Content, &temp.SolutionType)
+		rows.Scan(&temp.ID, &temp.Content, &temp.Summary)
 		solutions = append(solutions, temp)
 	}
 
@@ -62,7 +62,7 @@ func addQuestionSolution(solution QuestionSolution) int {
 	if err != nil {
 		return -1
 	}
-	_, err = stmt.Exec(solution.Content, solution.SolutionType)
+	_, err = stmt.Exec(solution.Content, solution.Summary)
 	if err != nil {
 		return -1
 	}
@@ -80,12 +80,12 @@ func updateQuestionSolution(solution QuestionSolution) int {
 		updateFieldSQL += " content='" + strToSafeString(solution.Content) + "' "
 	}
 
-	if solution.SolutionType > 0 {
+	if solution.Summary != "" {
 		hasUpdate = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
-		updateFieldSQL += " solution_type=" + intToSafeString(solution.SolutionType)
+		updateFieldSQL += " summary='" + strToSafeString(solution.Summary) + "' "
 	}
 
 	if !hasUpdate {

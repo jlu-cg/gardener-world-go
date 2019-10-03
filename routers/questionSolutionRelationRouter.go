@@ -23,6 +23,13 @@ func initQuestionSolutionRelation(app *iris.Application, crs context.Handler) {
 			ctx.JSON(code)
 		})
 
+		questionSolutionRelationV1.Post("/saveOrder", func(ctx iris.Context) {
+			var updateQuestionSolutionRelations []service.QuestionSolutionRelationDetail
+			ctx.ReadJSON(&updateQuestionSolutionRelations)
+			code := service.UpdateQuestionSolutionRelations(updateQuestionSolutionRelations)
+			ctx.JSON(code)
+		})
+
 		questionSolutionRelationV1.Get("/delete", func(ctx iris.Context) {
 			questionSolutionRelationID := getIntVal("questionSolutionRelationId", 0, ctx)
 			var deleteQuestionSolutionRelation service.QuestionSolutionRelation

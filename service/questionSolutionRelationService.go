@@ -10,6 +10,10 @@ func SaveQuestionSolutionRelation(relation QuestionSolutionRelation) int {
 	return addQuestionSolutionRelation(relation)
 }
 
+func UpdateQuestionSolutionRelations(details []QuestionSolutionRelationDetail) int {
+	return updateQuestionSolutionRelations(details)
+}
+
 //DeleteQuestionSolutionRelations 删除问题和答案的关系
 func DeleteQuestionSolutionRelations(relation QuestionSolutionRelation) int {
 	return deleteQuestionSolutionRelations(relation)
