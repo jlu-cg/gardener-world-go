@@ -1,8 +1,12 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
 
-//UserPrivilege 标签
+	"github.com/gardener/gardener-world-go/config"
+)
+
+//UserPrivilege 用户权限
 type UserPrivilege struct {
 	ID     int    `json:"id"`
 	Name   string `json:"name"`
@@ -64,78 +68,78 @@ func addUserPrivilege(userPrivilege UserPrivilege) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(addUserInfoSQL)
+	stmt, err := connection.Prepare(addUserPrivilegeSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(userPrivilege.Name, userPrivilege.Status)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateUserPrivilege(userPrivilege UserPrivilege) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if userPrivilege.Name != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " name='" + strToSafeString(userPrivilege.Name) + "' "
 	}
 
 	if userPrivilege.Status > 0 {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " status=" + intToSafeString(userPrivilege.Status)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(fmt.Sprintf(updateUserInfoSQL, updateFieldSQL))
+	stmt, err := connection.Prepare(fmt.Sprintf(updateUserPrivilegeSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(userPrivilege.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteUserPrivileges(userPrivilege UserPrivilege) int {
 
-	hasUpdate := false
+	hasCondition := false
 	whereSQL := " where 1=1 "
 	if userPrivilege.ID > 0 {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and id=" + intToSafeString(userPrivilege.ID)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteUserInfosSQL)
+	stmt, err := connection.Prepare(deleteUserPrivilegesSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

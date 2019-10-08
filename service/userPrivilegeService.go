@@ -8,10 +8,10 @@ func QueryUserPrivileges(userPrivilege UserPrivilege, lastID int) []UserPrivileg
 //SaveUserPrivilege 保存用户权限
 func SaveUserPrivilege(userPrivilege UserPrivilege) int {
 	if userPrivilege.ID > 0 {
-		return addUserPrivilege(userPrivilege)
+		return updateUserPrivilege(userPrivilege)
 	}
 
-	return updateUserPrivilege(userPrivilege)
+	return addUserPrivilege(userPrivilege)
 }
 
 //DeleteUserPrivileges 删除用户权限

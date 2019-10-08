@@ -1,0 +1,16 @@
+package service
+
+//QueryUserRoleRelationWithPrivileges 查询角色权限关系包含角色信息
+func QueryUserRolePrivilegeRelationWithPrivileges(userRolePrivilegeRelationWithPrivilege UserRolePrivilegeRelationWithPrivilege, lastID int) []UserRolePrivilegeRelationWithPrivilege {
+	return queryUserRolePrivilegeRelationWithPrivileges(userRolePrivilegeRelationWithPrivilege, lastID)
+}
+
+//SaveUserRolePrivilegeRelation 保存角色权限关系
+func SaveUserRolePrivilegeRelation(userRolePrivilegeRelation UserRolePrivilegeRelation) int {
+	return addUserRolePrivilegeRelation(userRolePrivilegeRelation)
+}
+
+//DeleteUserRolePrivilegeRelations 删除角色权限关系
+func DeleteUserRolePrivilegeRelations(userRolePrivilegeRelation UserRolePrivilegeRelation) int {
+	return deleteUserRolePrivilegeRelations(userRolePrivilegeRelation)
+}

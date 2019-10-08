@@ -1,6 +1,10 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
 
 //Tag 用户信息
 type UserInfo struct {
@@ -73,28 +77,28 @@ func addUserInfo(userInfo UserInfo) int {
 
 	stmt, err := connection.Prepare(addUserInfoSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(userInfo.UserName, userInfo.Password, userInfo.NickName, userInfo.Email, userInfo.MobilePhone)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateUserInfo(userInfo UserInfo) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if userInfo.UserName != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " user_name='" + strToSafeString(userInfo.UserName) + "' "
 	}
 
 	if userInfo.Password != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
@@ -102,7 +106,7 @@ func updateUserInfo(userInfo UserInfo) int {
 	}
 
 	if userInfo.NickName != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
@@ -110,7 +114,7 @@ func updateUserInfo(userInfo UserInfo) int {
 	}
 
 	if userInfo.Email != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
@@ -118,15 +122,15 @@ func updateUserInfo(userInfo UserInfo) int {
 	}
 
 	if userInfo.MobilePhone != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " mobile_phone='" + strToSafeString(userInfo.MobilePhone) + "' "
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -134,26 +138,26 @@ func updateUserInfo(userInfo UserInfo) int {
 
 	stmt, err := connection.Prepare(fmt.Sprintf(updateUserInfoSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(userInfo.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteUserInfos(userInfo UserInfo) int {
 
-	hasUpdate := false
+	hasCondition := false
 	whereSQL := " where 1=1 "
 	if userInfo.ID > 0 {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and id=" + intToSafeString(userInfo.ID)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -161,12 +165,12 @@ func deleteUserInfos(userInfo UserInfo) int {
 
 	stmt, err := connection.Prepare(deleteUserInfosSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }
