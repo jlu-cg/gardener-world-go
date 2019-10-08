@@ -1,6 +1,10 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
 
 //Question 问题
 type Question struct {
@@ -60,36 +64,36 @@ func addQuestion(question Question) int {
 
 	stmt, err := connection.Prepare(addQuestionSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(question.Summary, question.Detail)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateQuestion(question Question) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if question.Summary != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " summary='" + strToSafeString(question.Summary) + "' "
 	}
 
 	if question.Detail != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " detail='" + strToSafeString(question.Detail) + "' "
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -97,26 +101,26 @@ func updateQuestion(question Question) int {
 
 	stmt, err := connection.Prepare(fmt.Sprintf(updateQuestionSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(question.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteQuestions(question Question) int {
 
-	hasUpdate := false
+	hasCondition := false
 	whereSQL := " where 1=1 "
 	if question.ID > 0 {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and id=" + intToSafeString(question.ID)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -124,12 +128,12 @@ func deleteQuestions(question Question) int {
 
 	stmt, err := connection.Prepare(deleteQuestionSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

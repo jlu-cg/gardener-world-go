@@ -1,6 +1,10 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
 
 type EnvironmentLabel struct {
 	ID      int    `json:"id"`
@@ -61,36 +65,36 @@ func addEnvironmentLabel(label EnvironmentLabel) int {
 
 	stmt, err := connection.Prepare(addEnvironmentLabelSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(label.Name, label.Version)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateEnvironmentLabel(label EnvironmentLabel) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if label.Name != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " name='" + strToSafeString(label.Name) + "' "
 	}
 
 	if label.Version != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " version='" + strToSafeString(label.Version) + "' "
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -98,48 +102,48 @@ func updateEnvironmentLabel(label EnvironmentLabel) int {
 
 	stmt, err := connection.Prepare(fmt.Sprintf(updateEnvironmentLabelSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(label.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteEnvironmentLabels(label EnvironmentLabel) int {
 
-	hasUpdate := false
+	hasCondition := false
 	whereSQL := " where 1=1 "
 	if label.ID > 0 {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and id=" + intToSafeString(label.ID)
 	}
 
 	if label.Name != "" {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and name = '" + strToSafeString(label.Name) + "' "
 	}
 
 	if label.Version != "" {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and version ='" + strToSafeString(label.Version) + "' "
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
 	defer release(connection)
 	stmt, err := connection.Prepare(deleteEnvironmentLabelSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

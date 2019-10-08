@@ -1,6 +1,10 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
 
 type DetailIntroduction struct {
 	ID      int    `json:"id"`
@@ -53,36 +57,36 @@ func addDetailIntroduction(introduction DetailIntroduction) int {
 
 	stmt, err := connection.Prepare(addDetailIntroductionSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(introduction.Summary, introduction.Content)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateDetailIntroduction(introduction DetailIntroduction) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if introduction.Summary != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " summary='" + strToSafeString(introduction.Summary) + "' "
 	}
 
 	if introduction.Content != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " content='" + strToSafeString(introduction.Content) + "' "
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -90,26 +94,26 @@ func updateDetailIntroduction(introduction DetailIntroduction) int {
 
 	stmt, err := connection.Prepare(fmt.Sprintf(updateDetailIntroductionSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(introduction.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteDetailIntroductions(introduction DetailIntroduction) int {
 
-	hasUpdate := false
+	hasCondition := false
 	whereSQL := " where 1=1 "
 	if introduction.ID > 0 {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and id=" + intToSafeString(introduction.ID)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -117,12 +121,12 @@ func deleteDetailIntroductions(introduction DetailIntroduction) int {
 
 	stmt, err := connection.Prepare(deleteDetailIntroductionSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 //ArticleFragmentRelationDetail 文章关联详情
 type ArticleFragmentRelationDetail struct {
 	ID         int    `json:"id"`
@@ -62,22 +64,22 @@ func queryArticleFragmentRelationDetails(detail ArticleFragmentRelationDetail) [
 func addArticleFragmentRelation(detail ArticleFragmentRelationDetail) int {
 	queryDetail := queryArticleFragmentRelationDetailByID(detail.ID)
 	if queryDetail.ID > 0 {
-		return -1
+		return config.DBErrorNoData
 	}
 	connection := connect()
 	defer release(connection)
 
 	stmt, err := connection.Prepare(addArticleFragmentRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(detail.ArticleID, detail.FragmentID, detail.Position)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateArticleFragmentRelations(details []ArticleFragmentRelationDetail) int {
@@ -86,16 +88,16 @@ func updateArticleFragmentRelations(details []ArticleFragmentRelationDetail) int
 
 	stmt, err := connection.Prepare(updateArticleFragmentRelationPosSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	for _, detail := range details {
 		_, err = stmt.Exec(detail.Position, detail.ID)
 		if err != nil {
-			return -1
+			return config.DBErrorExecution
 		}
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteArticleFragmentRelations(relation ArticleFragmentRelationDetail) int {
@@ -108,7 +110,7 @@ func deleteArticleFragmentRelations(relation ArticleFragmentRelationDetail) int 
 	}
 
 	if !hasCondition {
-		return -1
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -116,13 +118,13 @@ func deleteArticleFragmentRelations(relation ArticleFragmentRelationDetail) int 
 
 	stmt, err := connection.Prepare(deleteArticleFragmentRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func queryArticleFragmentRelationDetailByID(ID int) ArticleFragmentRelationDetail {

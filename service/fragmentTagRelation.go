@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 //FragmentTagRelation 碎片标签
 type FragmentTagRelation struct {
 	ID         int    `json:"id"`
@@ -70,14 +72,14 @@ func updateFragmentTagRelation(relation FragmentTagRelation) int {
 
 	stmt, err := connection.Prepare(updateFragmentTagRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(relation.FragmentID, relation.TagID, relation.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteFragmentTagRelations(relation FragmentTagRelation) int {
@@ -99,18 +101,18 @@ func deleteFragmentTagRelations(relation FragmentTagRelation) int {
 	}
 
 	if !hasCondition {
-		return -1
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
 	defer release(connection)
 	stmt, err := connection.Prepare(deleteFragmentTagRelationSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }

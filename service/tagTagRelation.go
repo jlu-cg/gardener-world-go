@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 //TagTagRelation 标签间关系
 type TagTagRelation struct {
 	ID          int    `json:"id"`
@@ -56,15 +58,15 @@ func addTagTagRelation(relation TagTagRelation) int {
 
 	stmt, err := connection.Prepare(addTagTagRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(relation.TagID, relation.RelateTagID, relation.RelateType)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateTagTagRelation(relation TagTagRelation) int {
@@ -73,14 +75,14 @@ func updateTagTagRelation(relation TagTagRelation) int {
 
 	stmt, err := connection.Prepare(updateTagTagRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(relation.TagID, relation.RelateTagID, relation.RelateType, relation.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteTagTagRelationByID(id int) int {
@@ -89,13 +91,13 @@ func deleteTagTagRelationByID(id int) int {
 
 	stmt, err := connection.Prepare(deleteTagTagRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(id)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteTagTagRelations(relation TagTagRelation) int {
@@ -118,7 +120,7 @@ func deleteTagTagRelations(relation TagTagRelation) int {
 	}
 
 	if !hasCondition {
-		return -1
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -126,11 +128,11 @@ func deleteTagTagRelations(relation TagTagRelation) int {
 
 	stmt, err := connection.Prepare(deleteTagTagRelationSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }

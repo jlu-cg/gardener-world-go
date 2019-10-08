@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 type IntroductionEnvironmentRelation struct {
 	ID                   int `json:"id"`
 	DetailIntroductionID int `json:"detailIntroductionId"`
@@ -62,7 +64,7 @@ func queryIntroductionEnvironmentRelations(relationDetail IntroductionEnvironmen
 func addIntroductionEnvironmentRelation(relation IntroductionEnvironmentRelation) int {
 
 	if relation.DetailIntroductionID <= 0 || relation.EnvironmentLabelID <= 0 {
-		return -1
+		return config.DBErrorSQLMissKeyCondition
 	}
 
 	connection := connect()
@@ -70,15 +72,15 @@ func addIntroductionEnvironmentRelation(relation IntroductionEnvironmentRelation
 
 	stmt, err := connection.Prepare(addIntroductionEnvironmentRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(relation.DetailIntroductionID, relation.EnvironmentLabelID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteIntroductionEnvironmentRelations(relation IntroductionEnvironmentRelation) int {
@@ -100,18 +102,18 @@ func deleteIntroductionEnvironmentRelations(relation IntroductionEnvironmentRela
 	}
 
 	if !hasCondition {
-		return -1
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
 	defer release(connection)
 	stmt, err := connection.Prepare(deleteIntroductionEnvironmentRelationSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
