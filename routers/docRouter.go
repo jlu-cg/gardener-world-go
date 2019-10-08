@@ -11,30 +11,27 @@ import (
 func InitDocRouter(app *iris.Application, crs context.Handler) {
 
 	initTag(app, crs)
-
 	initTagTagRelation(app, crs)
 
 	initFragment(app, crs)
-
 	initFragmentTagRelation(app, crs)
 
 	initArticle(app, crs)
-
 	initArticleTagRelation(app, crs)
-
 	initArticleFragmentRelation(app, crs)
-
 	initArticleArticleRelation(app, crs)
 
 	initEnvironmentLabel(app, crs)
 
 	initDetailIntroduction(app, crs)
-
 	initIntroductionEnvironmentRelation(app, crs)
 
 	initQuestion(app, crs)
 	initQuestionSolution(app, crs)
 	initQuestionSolutionRelation(app, crs)
+
+	initUserInfo(app, crs)
+	initUserPrivilege(app, crs)
 }
 
 func getIntVal(key string, defaultVal int, ctx iris.Context) int {
