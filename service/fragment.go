@@ -1,5 +1,11 @@
 package service
 
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
+
 //Fragment 碎片
 type Fragment struct {
 	ID      int    `json:"id"`
@@ -10,7 +16,7 @@ type Fragment struct {
 const (
 	queryFragmentsSQL     = "select id, title, content from fragment "
 	addFragmentSQL        = "insert into fragment(title, content)values($1, $2)"
-	updateFragmentSQL     = "update fragment set title=$1, content=$2 where id=$3"
+	updateFragmentSQL     = "update fragment set %s where id=$1"
 	deleteFragmentByIDSQL = "delete from fragment where id=$1"
 )
 
@@ -56,28 +62,48 @@ func addFragment(fragment Fragment) int {
 
 	stmt, err := connection.Prepare(addFragmentSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(fragment.Title, fragment.Content)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateFragment(fragment Fragment) int {
+	hasCondition := false
+
+	updateFieldSQL := ""
+
+	if fragment.Title != "" {
+		hasCondition = true
+		updateFieldSQL += " title='" + strToSafeString(fragment.Title) + "' "
+	}
+
+	if fragment.Content != "" {
+		hasCondition = true
+		if updateFieldSQL != "" {
+			updateFieldSQL += ","
+		}
+		updateFieldSQL += " content='" + strToSafeString(fragment.Content) + "' "
+	}
+
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
+	}
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(updateFragmentSQL)
+	stmt, err := connection.Prepare(fmt.Sprintf(updateFragmentSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
-	_, err = stmt.Exec(fragment.Title, fragment.Content, fragment.ID)
+	_, err = stmt.Exec(fragment.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteFragmentByID(id int) int {
@@ -86,12 +112,12 @@ func deleteFragmentByID(id int) int {
 
 	stmt, err := connection.Prepare(deleteFragmentByIDSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(id)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

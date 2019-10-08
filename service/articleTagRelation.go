@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 //ArticleTagRelation 文章标签关系
 type ArticleTagRelation struct {
 	ID        int    `json:"id"`
@@ -87,15 +89,15 @@ func addArticleTagRelation(relation ArticleTagRelation) int {
 
 	stmt, err := connection.Prepare(addArticleTagRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(relation.ArticleID, relation.TagID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateArticleTagRelation(relation ArticleTagRelation) int {
@@ -104,29 +106,14 @@ func updateArticleTagRelation(relation ArticleTagRelation) int {
 
 	stmt, err := connection.Prepare(updateArticleTagRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(relation.ArticleID, relation.TagID, relation.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
-}
-
-func deleteArticleTagRelationByID(id int) int {
-	connection := connect()
-	defer release(connection)
-
-	stmt, err := connection.Prepare(deleteArticleTagRelationSQL)
-	if err != nil {
-		return -1
-	}
-	_, err = stmt.Exec(id)
-	if err != nil {
-		return -1
-	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteArticleTagRelations(relation ArticleTagRelation) int {
@@ -149,7 +136,7 @@ func deleteArticleTagRelations(relation ArticleTagRelation) int {
 	}
 
 	if !hasCondition {
-		return -1
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -157,11 +144,11 @@ func deleteArticleTagRelations(relation ArticleTagRelation) int {
 
 	stmt, err := connection.Prepare(deleteArticleTagRelationSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }

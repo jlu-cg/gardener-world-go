@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 //ArticleArticleRelationDetail 文章关联详情
 type ArticleArticleRelationDetail struct {
 	ID              int    `json:"id"`
@@ -53,7 +55,7 @@ func addArticleArticleRelation(detail ArticleArticleRelationDetail) int {
 	if detail.ID > 0 {
 		queryDetail := queryArticleArticleRelationDetailByID(detail.ID)
 		if queryDetail.ID <= 0 {
-			return -1
+			return config.DBErrorNoData
 		}
 	}
 	connection := connect()
@@ -61,15 +63,15 @@ func addArticleArticleRelation(detail ArticleArticleRelationDetail) int {
 
 	stmt, err := connection.Prepare(addArticleArticleRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	_, err = stmt.Exec(detail.ArticleID, detail.RelateArticleID, detail.Position)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateArticleArticleRelations(details []ArticleArticleRelationDetail) int {
@@ -78,16 +80,16 @@ func updateArticleArticleRelations(details []ArticleArticleRelationDetail) int {
 
 	stmt, err := connection.Prepare(updateArticleArticleRelationPosSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	for _, detail := range details {
 		_, err = stmt.Exec(detail.Position, detail.ID)
 		if err != nil {
-			return -1
+			return config.DBErrorExecution
 		}
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteArticleArticleRelations(relation ArticleArticleRelationDetail) int {

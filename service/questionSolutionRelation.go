@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 type QuestionSolutionRelation struct {
 	ID           int `json:"id"`
 	QuestionID   int `json:"questionId"`
@@ -67,13 +69,13 @@ func addQuestionSolutionRelation(relation QuestionSolutionRelation) int {
 
 	stmt, err := connection.Prepare(addQuestionSolutionRelationSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(relation.QuestionID, relation.SolutionID, relation.SolutionType, relation.Position)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateQuestionSolutionRelations(details []QuestionSolutionRelationDetail) int {
@@ -82,16 +84,16 @@ func updateQuestionSolutionRelations(details []QuestionSolutionRelationDetail) i
 
 	stmt, err := connection.Prepare(updateQuestionSolutionRelationPosSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 
 	for _, detail := range details {
 		_, err = stmt.Exec(detail.Position, detail.ID)
 		if err != nil {
-			return -1
+			return config.DBErrorExecution
 		}
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteQuestionSolutionRelations(relation QuestionSolutionRelation) int {
@@ -112,7 +114,7 @@ func deleteQuestionSolutionRelations(relation QuestionSolutionRelation) int {
 	}
 
 	if !hasCondition {
-		return -1
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -120,12 +122,12 @@ func deleteQuestionSolutionRelations(relation QuestionSolutionRelation) int {
 
 	stmt, err := connection.Prepare(deleteQuestionSolutionRelationSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

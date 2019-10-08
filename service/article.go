@@ -1,6 +1,10 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
 
 //Article 文章
 type Article struct {
@@ -54,36 +58,36 @@ func addArticle(article Article) int {
 
 	stmt, err := connection.Prepare(addArticleSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(article.Title)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateArticle(article Article) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if article.Title != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " title='" + strToSafeString(article.Title) + "' "
 	}
 
 	if article.Status > 0 {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " status=" + intToSafeString(article.Status)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -91,13 +95,13 @@ func updateArticle(article Article) int {
 
 	stmt, err := connection.Prepare(fmt.Sprintf(updateArticleSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(article.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteArticleByID(id int) int {
@@ -106,12 +110,12 @@ func deleteArticleByID(id int) int {
 
 	stmt, err := connection.Prepare(deleteArticleByIDSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(id)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

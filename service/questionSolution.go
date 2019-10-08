@@ -1,6 +1,10 @@
 package service
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gardener/gardener-world-go/config"
+)
 
 //QuestionSolution 问题解决方法
 type QuestionSolution struct {
@@ -60,36 +64,36 @@ func addQuestionSolution(solution QuestionSolution) int {
 
 	stmt, err := connection.Prepare(addQuestionSolutionSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(solution.Content, solution.Summary)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func updateQuestionSolution(solution QuestionSolution) int {
 
-	hasUpdate := false
+	hasCondition := false
 
 	updateFieldSQL := ""
 
 	if solution.Content != "" {
-		hasUpdate = true
+		hasCondition = true
 		updateFieldSQL += " content='" + strToSafeString(solution.Content) + "' "
 	}
 
 	if solution.Summary != "" {
-		hasUpdate = true
+		hasCondition = true
 		if updateFieldSQL != "" {
 			updateFieldSQL += ","
 		}
 		updateFieldSQL += " summary='" + strToSafeString(solution.Summary) + "' "
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -97,26 +101,26 @@ func updateQuestionSolution(solution QuestionSolution) int {
 
 	stmt, err := connection.Prepare(fmt.Sprintf(updateQuestionSolutionSQL, updateFieldSQL))
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(solution.ID)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteQuestionSolutions(solution QuestionSolution) int {
 
-	hasUpdate := false
+	hasCondition := false
 	whereSQL := " where 1=1 "
 	if solution.ID > 0 {
-		hasUpdate = true
+		hasCondition = true
 		whereSQL += " and id=" + intToSafeString(solution.ID)
 	}
 
-	if !hasUpdate {
-		return -1
+	if !hasCondition {
+		return config.DBErrorSQLNoCondition
 	}
 
 	connection := connect()
@@ -124,12 +128,12 @@ func deleteQuestionSolutions(solution QuestionSolution) int {
 
 	stmt, err := connection.Prepare(deleteQuestionSolutionSQL + whereSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec()
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }

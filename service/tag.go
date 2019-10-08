@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gardener/gardener-world-go/config"
+
 //Tag 标签
 type Tag struct {
 	ID      int    `json:"id"`
@@ -63,13 +65,13 @@ func addTag(tag Tag) int {
 
 	stmt, err := connection.Prepare(addTagSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(tag.Name, tag.TagType)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 //更新标签
@@ -79,13 +81,13 @@ func updateTag(tag Tag) int {
 
 	stmt, err := connection.Prepare(updateTagSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(tag.Name, tag.TagType)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
-	return 0
+	return config.DBSuccess
 }
 
 func deleteTagByID(id int) int {
@@ -94,12 +96,12 @@ func deleteTagByID(id int) int {
 
 	stmt, err := connection.Prepare(deleteTagByIDSQL)
 	if err != nil {
-		return -1
+		return config.DBErrorConnection
 	}
 	_, err = stmt.Exec(id)
 	if err != nil {
-		return -1
+		return config.DBErrorExecution
 	}
 
-	return 0
+	return config.DBSuccess
 }
