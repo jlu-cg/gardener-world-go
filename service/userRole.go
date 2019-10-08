@@ -132,7 +132,7 @@ func deleteUserRoles(userRole UserRole) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteUserRolesSQL)
+	stmt, err := connection.Prepare(deleteUserRolesSQL + whereSQL)
 	if err != nil {
 		return config.DBErrorConnection
 	}

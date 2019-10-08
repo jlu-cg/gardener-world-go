@@ -132,7 +132,7 @@ func deleteUserPrivileges(userPrivilege UserPrivilege) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteUserPrivilegesSQL)
+	stmt, err := connection.Prepare(deleteUserPrivilegesSQL + whereSQL)
 	if err != nil {
 		return config.DBErrorConnection
 	}

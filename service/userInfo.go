@@ -14,11 +14,12 @@ type UserInfo struct {
 	NickName    string `json:"nickName"`
 	Email       string `json:"email"`
 	MobilePhone string `json:"mobilePhone"`
+	Status      int    `json:"status"`
 }
 
 const (
-	queryUserInfosSQL  = "select id, user_name, password, nick_name, email, mobile_phone from user_info "
-	addUserInfoSQL     = "insert into user_info(user_name, password, nick_name, email, mobile_phone)values($1, $2, $3, $4, $5)"
+	queryUserInfosSQL  = "select id, user_name, password, nick_name, email, mobile_phone, status from user_info "
+	addUserInfoSQL     = "insert into user_info(user_name, password, nick_name, email, mobile_phone, status)values($1, $2, $3, $4, $5, $6)"
 	updateUserInfoSQL  = "update user_info set %s where id=$1"
 	deleteUserInfosSQL = "delete from user_info "
 )
@@ -39,11 +40,15 @@ func queryUserInfos(userInfo UserInfo, lastID int) []UserInfo {
 	}
 
 	if userInfo.Email != "" {
-		whereSQL += " and email= '" + strToSafeString(userInfo.Email) + "' "
+		whereSQL += " and email='" + strToSafeString(userInfo.Email) + "' "
 	}
 
 	if userInfo.MobilePhone != "" {
 		whereSQL += " and mobile_phone like '" + strToSafeString(userInfo.MobilePhone) + "%' "
+	}
+
+	if userInfo.Status > 0 {
+		whereSQL += " and status=" + intToSafeString(userInfo.Status)
 	}
 
 	if lastID >= 0 {
@@ -64,7 +69,7 @@ func queryUserInfos(userInfo UserInfo, lastID int) []UserInfo {
 
 	var temp UserInfo
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.UserName, &temp.Password, &temp.NickName, &temp.Email, &temp.MobilePhone)
+		rows.Scan(&temp.ID, &temp.UserName, &temp.Password, &temp.NickName, &temp.Email, &temp.MobilePhone, &temp.Status)
 		userInfos = append(userInfos, temp)
 	}
 
@@ -79,7 +84,7 @@ func addUserInfo(userInfo UserInfo) int {
 	if err != nil {
 		return config.DBErrorConnection
 	}
-	_, err = stmt.Exec(userInfo.UserName, userInfo.Password, userInfo.NickName, userInfo.Email, userInfo.MobilePhone)
+	_, err = stmt.Exec(userInfo.UserName, userInfo.Password, userInfo.NickName, userInfo.Email, userInfo.MobilePhone, userInfo.Status)
 	if err != nil {
 		return config.DBErrorExecution
 	}
@@ -129,6 +134,14 @@ func updateUserInfo(userInfo UserInfo) int {
 		updateFieldSQL += " mobile_phone='" + strToSafeString(userInfo.MobilePhone) + "' "
 	}
 
+	if userInfo.Status > 0 {
+		hasCondition = true
+		if updateFieldSQL != "" {
+			updateFieldSQL += ","
+		}
+		updateFieldSQL += " status=" + intToSafeString(userInfo.Status)
+	}
+
 	if !hasCondition {
 		return config.DBErrorSQLNoCondition
 	}
@@ -163,7 +176,7 @@ func deleteUserInfos(userInfo UserInfo) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteUserInfosSQL)
+	stmt, err := connection.Prepare(deleteUserInfosSQL + whereSQL)
 	if err != nil {
 		return config.DBErrorConnection
 	}

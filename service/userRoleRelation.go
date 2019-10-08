@@ -110,7 +110,7 @@ func deleteUserRoleRelations(userRoleRelation UserRoleRelation) int {
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteUserRoleRelationsSQL)
+	stmt, err := connection.Prepare(deleteUserRoleRelationsSQL + whereSQL)
 	if err != nil {
 		return config.DBErrorConnection
 	}
