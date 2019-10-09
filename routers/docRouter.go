@@ -31,7 +31,10 @@ func InitDocRouter(app *iris.Application, crs context.Handler) {
 	initQuestionSolutionRelation(app, crs)
 
 	initUserInfo(app, crs)
+	initUserRole(app, crs)
 	initUserPrivilege(app, crs)
+	initUserRoleRelation(app, crs)
+	initUserRolePrivilegeRelation(app, crs)
 }
 
 func getIntVal(key string, defaultVal int, ctx iris.Context) int {

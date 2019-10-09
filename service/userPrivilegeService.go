@@ -5,6 +5,18 @@ func QueryUserPrivileges(userPrivilege UserPrivilege, lastID int) []UserPrivileg
 	return queryUserPrivileges(userPrivilege, lastID)
 }
 
+//QueryUserPrivilegeByID 通过ID查询用户权限
+func QueryUserPrivilegeByID(id int) UserPrivilege {
+	var queryUserPrivilege UserPrivilege
+	queryUserPrivilege.ID = id
+	var result UserPrivilege
+	userPrivileges := queryUserPrivileges(queryUserPrivilege, 0)
+	if len(userPrivileges) > 0 {
+		result = userPrivileges[0]
+	}
+	return result
+}
+
 //SaveUserPrivilege 保存用户权限
 func SaveUserPrivilege(userPrivilege UserPrivilege) int {
 	if userPrivilege.ID > 0 {

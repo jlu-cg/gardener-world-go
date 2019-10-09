@@ -24,6 +24,12 @@ func initUserRole(app *iris.Application, crs context.Handler) {
 			ctx.JSON(code)
 		})
 
+		userRoleV1.Get("/detail", func(ctx iris.Context) {
+			userRoleID := getIntVal("userRoleId", 0, ctx)
+			result := service.QueryUserRoleByID(userRoleID)
+			ctx.JSON(result)
+		})
+
 		userRoleV1.Get("/delete", func(ctx iris.Context) {
 			userRoleID := getIntVal("userRoleId", 0, ctx)
 			var deleteUserRole service.UserRole

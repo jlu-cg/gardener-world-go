@@ -19,7 +19,7 @@ type UserRolePrivilegeRelationWithPrivilege struct {
 
 const (
 	queryUserRolePrivilegeRelationWithPrivilegesSQL = "select a.id, a.role_id, a.privilege_id, b.name, b.status from user_role_privilege_relation a inner join user_privilege b on a.privilege_id=b.id "
-	addUserRolePrivilegeRelationSQL                 = "insert into user_role_privilege_relation(user_id, role_id)values($1, $2)"
+	addUserRolePrivilegeRelationSQL                 = "insert into user_role_privilege_relation(role_id, privilege_id)values($1, $2)"
 	deleteUserRolePrivilegeRelationsSQL             = "delete from user_role_privilege_relation "
 )
 

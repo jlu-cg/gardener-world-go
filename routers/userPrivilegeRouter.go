@@ -24,6 +24,12 @@ func initUserPrivilege(app *iris.Application, crs context.Handler) {
 			ctx.JSON(code)
 		})
 
+		userPrivilegeV1.Get("/detail", func(ctx iris.Context) {
+			userPrivilegeID := getIntVal("userPrivilegeId", 0, ctx)
+			result := service.QueryUserPrivilegeByID(userPrivilegeID)
+			ctx.JSON(result)
+		})
+
 		userPrivilegeV1.Get("/delete", func(ctx iris.Context) {
 			userPrivilegeID := getIntVal("userPrivilegeId", 0, ctx)
 			var deleteUserPrivilege service.UserPrivilege
