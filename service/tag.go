@@ -31,7 +31,7 @@ func queryTags(tag Tag, lastID int) []Tag {
 		whereSQL += " and id=" + intToSafeString(tag.ID)
 	}
 	if tag.TagType > 0 {
-		whereSQL += " and tag_type=" + intToSafeString(tag.ID)
+		whereSQL += " and tag_type=" + intToSafeString(tag.TagType)
 	}
 	if lastID >= 0 {
 		whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
