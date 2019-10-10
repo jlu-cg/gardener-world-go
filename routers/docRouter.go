@@ -10,11 +10,13 @@ import (
 //InitDocRouter 初始化文档
 func InitDocRouter(app *iris.Application, crs context.Handler) {
 
-	initTag(app, crs)
-	initTagTagRelation(app, crs)
+	initTagArticle(app, crs)
+	initTagFragment(app, crs)
+	initTagArticleFragmentRelation(app, crs)
 
 	initFragment(app, crs)
 	initFragmentTagRelation(app, crs)
+	initFragmentIntroductionRelation(app, crs)
 
 	initArticle(app, crs)
 	initArticleTagRelation(app, crs)

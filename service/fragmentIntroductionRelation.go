@@ -40,7 +40,7 @@ func queryFragmentIntroductionRelationWithIntroductions(relation FragmentIntrodu
 	}
 
 	if lastID >= 0 {
-		whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
+		whereSQL += " and a.id>" + intToSafeString(lastID) + " limit 20 "
 	}
 	rows, err := connection.Query(queryFragmentIntroductionRelationWithIntroductionsSQL + whereSQL)
 	defer rows.Close()
@@ -100,7 +100,7 @@ func deleteFragmentIntroductionRelations(relation FragmentIntroductionRelation) 
 	connection := connect()
 	defer release(connection)
 
-	stmt, err := connection.Prepare(deleteDetailIntroductionSQL)
+	stmt, err := connection.Prepare(deleteFragmentIntroductionRelationsSQL)
 	if err != nil {
 		return config.DBErrorConnection
 	}
