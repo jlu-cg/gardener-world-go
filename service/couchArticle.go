@@ -32,7 +32,7 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 
 	article.Status = 1
 	article.ID = articleID
-	SaveArticle(article)
+	SaveArticle(article.Article)
 
 	articleIDStr := strconv.Itoa(articleID)
 	oldArticleDocument := CouchdbGetArticleDocumentByArticleID(articleID)
@@ -45,7 +45,7 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 	var code int
 	if oldArticleDocument.Rev != "" {
 		var articleDocument ArticleDocument
-		articleDocument.Article = article
+		articleDocument.Article = article.Article
 		articleDocument.ArticleArticleRelationDetails = articleArticleRelationDetails
 		articleDocument.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
 		articleDocument.Rev = oldArticleDocument.Rev
@@ -53,7 +53,7 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 		code = couchdbUpdateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
 	} else {
 		var articleDocumentAdd ArticleDocumentAdd
-		articleDocumentAdd.Article = article
+		articleDocumentAdd.Article = article.Article
 		articleDocumentAdd.ArticleArticleRelationDetails = articleArticleRelationDetails
 		articleDocumentAdd.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
 		articleDocumentBody, _ := json.Marshal(articleDocumentAdd)

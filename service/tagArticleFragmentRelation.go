@@ -12,10 +12,11 @@ type TagArticleFragmentRelation struct {
 type TagArticleFragmentRelationDetail struct {
 	TagArticleFragmentRelation
 	TagName string `json:"tagName"`
+	Type    int    `json:"type"`
 }
 
 const (
-	queryTagArticleFragmentRelationDetailsSQL = "select a.id, a.tag_article_id, a.tag_fragment_id, b.name from tag_article_fragment_relation a inner join tag_fragment b on a.tag_fragment_id=b.id "
+	queryTagArticleFragmentRelationDetailsSQL = "select a.id, a.tag_article_id, a.tag_fragment_id, b.name, b.type from tag_article_fragment_relation a inner join tag_fragment b on a.tag_fragment_id=b.id "
 	addTagArticleFragmentRelationSQL          = "insert into tag_article_fragment_relation(tag_article_id, tag_fragment_id) values($1, $2)"
 	deleteTagArticleFragmentRelatiosSQL       = "delete from tag_article_fragment_relation"
 )
@@ -50,7 +51,7 @@ func queryTagArticleFragmentRelationDetails(relation TagArticleFragmentRelationD
 
 	var temp TagArticleFragmentRelationDetail
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.TagArticleID, &temp.TagFragmentID, &temp.TagName)
+		rows.Scan(&temp.ID, &temp.TagArticleID, &temp.TagFragmentID, &temp.TagName, &temp.Type)
 		tagArticleFragmentRelationDetails = append(tagArticleFragmentRelationDetails, temp)
 	}
 

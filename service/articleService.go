@@ -1,9 +1,11 @@
 package service
 
 //QueryArticles 查询文章
-func QueryArticles(article Article, lastID int) []Article {
-	articles := queryArticles(article, lastID)
-	return articles
+func QueryArticles(article ArticleWithTag, lastID int) []ArticleWithTag {
+	if article.TagArticleID > 0 {
+		return queryArticleWithTags(article, lastID)
+	}
+	return queryArticles(article.Article, lastID)
 }
 
 //SaveArticle 保存文章
@@ -17,7 +19,7 @@ func SaveArticle(article Article) int {
 }
 
 //GetArticleByID 查询文章
-func QueryArticleByID(articleID int) Article {
+func QueryArticleByID(articleID int) ArticleWithTag {
 	if articleID > 0 {
 		var queryArticle Article
 		queryArticle.ID = articleID
@@ -26,7 +28,7 @@ func QueryArticleByID(articleID int) Article {
 			return articles[0]
 		}
 	}
-	var article Article
+	var article ArticleWithTag
 	return article
 }
 

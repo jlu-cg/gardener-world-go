@@ -10,11 +10,11 @@ func initArticle(app *iris.Application, crs context.Handler) {
 	articleV1 := app.Party("/article/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		articleV1.Post("/list", func(ctx iris.Context) {
-			var queryArticle service.Article
-			ctx.ReadJSON(&queryArticle)
+			var queryArticleWithTag service.ArticleWithTag
+			ctx.ReadJSON(&queryArticleWithTag)
 			lastID := postIntVal("lastId", 0, ctx)
-			articles := service.QueryArticles(queryArticle, lastID)
-			ctx.JSON(articles)
+			articleWithTags := service.QueryArticles(queryArticleWithTag, lastID)
+			ctx.JSON(articleWithTags)
 		})
 
 		articleV1.Post("/save", func(ctx iris.Context) {

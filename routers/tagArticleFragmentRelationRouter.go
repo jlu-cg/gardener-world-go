@@ -12,8 +12,8 @@ func initTagArticleFragmentRelation(app *iris.Application, crs context.Handler) 
 		tagArticleFragmentRelationV1.Post("/list", func(ctx iris.Context) {
 			var queryTagArticleFragmentRelationDetail service.TagArticleFragmentRelationDetail
 			ctx.ReadJSON(&queryTagArticleFragmentRelationDetail)
-			tagTagRelations := service.QueryTagArticleFragmentRelationDetails(queryTagArticleFragmentRelationDetail)
-			ctx.JSON(tagTagRelations)
+			tagArticleFragmentRelations := service.QueryTagArticleFragmentRelationDetails(queryTagArticleFragmentRelationDetail)
+			ctx.JSON(tagArticleFragmentRelations)
 		})
 
 		tagArticleFragmentRelationV1.Post("/save", func(ctx iris.Context) {

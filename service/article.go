@@ -12,15 +12,56 @@ type Article struct {
 	Title  string `json:"title"`
 	Status int    `json:"status"`
 }
+type ArticleWithTag struct {
+	Article
+	TagArticleID int `json:"tagArticleId"`
+}
 
 const (
-	queryArticlesSQL     = "select id, title, status from article "
-	addArticleSQL        = "insert into article(title)values($1)"
-	updateArticleSQL     = "update article set %s where id=$1"
-	deleteArticleByIDSQL = "delete from article where id=$1"
+	queryArticleWithTagsSQL = "select a.id, a.title, a.status from article a inner join article_tag_relation b on a.id=b.article_id "
+	queryArticlesSQL        = "select id, title, status from article "
+	addArticleSQL           = "insert into article(title)values($1)"
+	updateArticleSQL        = "update article set %s where id=$1"
+	deleteArticleByIDSQL    = "delete from article where id=$1"
 )
 
-func queryArticles(article Article, lastID int) []Article {
+func queryArticleWithTags(article ArticleWithTag, lastID int) []ArticleWithTag {
+	connection := connect()
+	defer release(connection)
+
+	whereSQL := " where 1=1 "
+
+	if article.ID > 0 {
+		whereSQL += " and a.id=" + intToSafeString(article.ID)
+	}
+
+	if article.TagArticleID > 0 {
+		whereSQL += " and b.tag_article_id=" + intToSafeString(article.TagArticleID)
+	}
+
+	if lastID >= 0 {
+		whereSQL += " and a.id>" + intToSafeString(lastID) + " limit 20 "
+	}
+	rows, err := connection.Query(queryArticleWithTagsSQL + whereSQL)
+	defer rows.Close()
+	var articleWithTags []ArticleWithTag
+	if rows == nil {
+		return articleWithTags
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	var temp ArticleWithTag
+	for rows.Next() {
+		rows.Scan(&temp.ID, &temp.Title, &temp.Status)
+		articleWithTags = append(articleWithTags, temp)
+	}
+
+	return articleWithTags
+}
+
+func queryArticles(article Article, lastID int) []ArticleWithTag {
 	connection := connect()
 	defer release(connection)
 
@@ -35,7 +76,7 @@ func queryArticles(article Article, lastID int) []Article {
 	}
 	rows, err := connection.Query(queryArticlesSQL + whereSQL)
 	defer rows.Close()
-	var articles []Article
+	var articles []ArticleWithTag
 	if rows == nil {
 		return articles
 	}
@@ -43,7 +84,7 @@ func queryArticles(article Article, lastID int) []Article {
 		panic(err)
 	}
 
-	var temp Article
+	var temp ArticleWithTag
 	for rows.Next() {
 		rows.Scan(&temp.ID, &temp.Title, &temp.Status)
 		articles = append(articles, temp)
