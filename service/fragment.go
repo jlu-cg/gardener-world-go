@@ -12,15 +12,56 @@ type Fragment struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
+type FragmentWithTag struct {
+	Fragment
+	TagFragmentID int `json:"tagFragmentId"`
+}
 
 const (
-	queryFragmentsSQL     = "select id, title, content from fragment "
-	addFragmentSQL        = "insert into fragment(title, content)values($1, $2)"
-	updateFragmentSQL     = "update fragment set %s where id=$1"
-	deleteFragmentByIDSQL = "delete from fragment where id=$1"
+	queryFragmentWithTagsSQL = "select a.id, a.title, a.content from fragment a inner join fragment_tag_relation b where a.id=b.fragment_id "
+	queryFragmentsSQL        = "select id, title, content from fragment "
+	addFragmentSQL           = "insert into fragment(title, content)values($1, $2)"
+	updateFragmentSQL        = "update fragment set %s where id=$1"
+	deleteFragmentByIDSQL    = "delete from fragment where id=$1"
 )
 
-func queryFragments(fragment Fragment, lastID int) []Fragment {
+func queryFragmentWithTags(fragment FragmentWithTag, lastID int) []FragmentWithTag {
+	connection := connect()
+	defer release(connection)
+
+	whereSQL := " where 1=1 "
+
+	if fragment.ID > 0 {
+		whereSQL += " and a.id=" + intToSafeString(fragment.ID)
+	}
+
+	if fragment.TagFragmentID > 0 {
+		whereSQL += " and b.tag_fragment_id=" + intToSafeString(fragment.TagFragmentID)
+	}
+
+	if lastID >= 0 {
+		whereSQL += " and a.id>" + intToSafeString(lastID) + " limit 20 "
+	}
+	rows, err := connection.Query(queryFragmentWithTagsSQL + whereSQL)
+	defer rows.Close()
+	var fragmentWithTags []FragmentWithTag
+	if rows == nil {
+		return fragmentWithTags
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	var temp FragmentWithTag
+	for rows.Next() {
+		rows.Scan(&temp.ID, &temp.Title, &temp.Content)
+		fragmentWithTags = append(fragmentWithTags, temp)
+	}
+
+	return fragmentWithTags
+}
+
+func queryFragments(fragment Fragment, lastID int) []FragmentWithTag {
 	connection := connect()
 	defer release(connection)
 
@@ -38,7 +79,7 @@ func queryFragments(fragment Fragment, lastID int) []Fragment {
 		whereSQL += " and id>" + intToSafeString(lastID) + " limit 20 "
 	}
 	rows, err := connection.Query(queryFragmentsSQL + whereSQL)
-	var fragments []Fragment
+	var fragments []FragmentWithTag
 	if rows == nil {
 		return fragments
 	}
@@ -47,7 +88,7 @@ func queryFragments(fragment Fragment, lastID int) []Fragment {
 		panic(err)
 	}
 
-	var temp Fragment
+	var temp FragmentWithTag
 	for rows.Next() {
 		rows.Scan(&temp.ID, &temp.Title, &temp.Content)
 		fragments = append(fragments, temp)

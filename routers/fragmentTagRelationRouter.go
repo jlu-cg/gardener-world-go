@@ -9,11 +9,18 @@ import (
 func initFragmentTagRelation(app *iris.Application, crs context.Handler) {
 	fragmentTagRelationV1 := app.Party("/fragment/tag/relation/v1", crs).AllowMethods(iris.MethodOptions)
 	{
-		fragmentTagRelationV1.Post("/list", func(ctx iris.Context) {
-			var queryFragmentTagRelation service.FragmentTagRelation
-			ctx.ReadJSON(&queryFragmentTagRelation)
-			fragmentTagRelations := service.QueryFragmentTagRelations(queryFragmentTagRelation)
-			ctx.JSON(fragmentTagRelations)
+		fragmentTagRelationV1.Post("/list/fragment", func(ctx iris.Context) {
+			var queryFragmentTagRelationWithFragment service.FragmentTagRelationWithFragment
+			ctx.ReadJSON(&queryFragmentTagRelationWithFragment)
+			fragmentTagRelationWithFragments := service.QueryFragmentTagRelationWithFragments(queryFragmentTagRelationWithFragment)
+			ctx.JSON(fragmentTagRelationWithFragments)
+		})
+
+		fragmentTagRelationV1.Post("/list/tag", func(ctx iris.Context) {
+			var queryFragmentTagRelationWithTag service.FragmentTagRelationWithTag
+			ctx.ReadJSON(&queryFragmentTagRelationWithTag)
+			fragmentTagRelationWithTags := service.QueryFragmentTagRelationWithTags(queryFragmentTagRelationWithTag)
+			ctx.JSON(fragmentTagRelationWithTags)
 		})
 
 		fragmentTagRelationV1.Post("/save", func(ctx iris.Context) {

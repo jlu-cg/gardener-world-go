@@ -1,8 +1,13 @@
 package service
 
-//QueryFragmentTagRelations 查询碎片标签关系
-func QueryFragmentTagRelations(relation FragmentTagRelation) []FragmentTagRelation {
-	return queryFragmentTagRelations(relation)
+//QueryFragmentTagRelationWithTags 查询碎片标签关系和标签
+func QueryFragmentTagRelationWithTags(relation FragmentTagRelationWithTag) []FragmentTagRelationWithTag {
+	return queryFragmentTagRelationWithTags(relation)
+}
+
+//QueryFragmentTagRelationWithFragments 查询碎片标签关系和碎片
+func QueryFragmentTagRelationWithFragments(relation FragmentTagRelationWithFragment) []FragmentTagRelationWithFragment {
+	return queryFragmentTagRelationWithFragments(relation)
 }
 
 //SaveFragmentTagRelation 保存碎片和标签的关系

@@ -4,83 +4,91 @@ import "github.com/gardener/gardener-world-go/config"
 
 //ArticleTagRelation 文章标签关系
 type ArticleTagRelation struct {
-	ID        int    `json:"id"`
-	ArticleID int    `json:"articleId"`
-	TagID     int    `json:"tagId"`
-	Title     string `json:"title"`
-	Name      string `json:"name"`
-	TagType   int    `json:"tagType"`
+	ID           int `json:"id"`
+	ArticleID    int `json:"articleId"`
+	TagArticleID int `json:"tagArticleId"`
+}
+
+type ArticleTagRelationWithArticle struct {
+	ArticleTagRelation
+	Title string `json:"title"`
+}
+
+type ArticleTagRelationWithTag struct {
+	ArticleTagRelation
+	Name string `json:"name"`
+	Type int    `json:"type"`
 }
 
 const (
-	queryArticleTagRelationsSQL    = "select a.id, a.article_id, a.tag_id, b.title from article_tag_relation a inner join article b on a.article_id=b.id "
-	queryTagArticleTagRelationsSQL = "select a.id, a.article_id, a.tag_id, b.name, b.tag_type from article_tag_relation a inner join tag b on a.tag_id=b.id "
-	addArticleTagRelationSQL       = "insert into article_tag_relation(article_id, tag_id) values($1, $2)"
-	updateArticleTagRelationSQL    = "update article_tag_relation article_id=$1, tag_id=$2 where id=$3"
-	deleteArticleTagRelationSQL    = "delete from article_tag_relation "
+	queryArticleTagRelationWithTagsSQL     = "select a.id, a.article_id, a.tag_article_id, b.name, b.type from article_tag_relation a inner join tag_article b on a.tag_article_id=b.id "
+	queryArticleTagRelationWithArticlesSQL = "select a.id, a.article_id, a.tag_article_id, b.title from article_tag_relation a inner join article b on a.article_id=b.id "
+	addArticleTagRelationSQL               = "insert into article_tag_relation(article_id, tag_article_id) values($1, $2)"
+	updateArticleTagRelationSQL            = "update article_tag_relation article_id=$1, tag_article_id=$2 where id=$3"
+	deleteArticleTagRelationSQL            = "delete from article_tag_relation "
 )
 
-func queryArticleTagRelations(relation ArticleTagRelation) []ArticleTagRelation {
+func queryArticleTagRelationWithTags(relation ArticleTagRelationWithTag) []ArticleTagRelationWithTag {
 
-	var articleTagRelations []ArticleTagRelation
-	whereSQL := " where 1=1 "
-	if relation.TagID > 0 {
-		whereSQL += " and a.tag_id=" + intToSafeString(relation.TagID)
-	} else {
-		return articleTagRelations
-	}
-
-	whereSQL += " order by a.id asc "
-	connection := connect()
-	defer release(connection)
-
-	rows, err := connection.Query(queryArticleTagRelationsSQL + whereSQL)
-	defer rows.Close()
-	if rows == nil {
-		return articleTagRelations
-	}
-	if err != nil {
-		panic(err)
-	}
-
-	var temp ArticleTagRelation
-	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.ArticleID, &temp.TagID, &temp.Title)
-		articleTagRelations = append(articleTagRelations, temp)
-	}
-
-	return articleTagRelations
-}
-
-func queryTagArticleTagRelations(relation ArticleTagRelation) []ArticleTagRelation {
-	var articleTagRelations []ArticleTagRelation
+	var articleTagRelationWithTags []ArticleTagRelationWithTag
 	whereSQL := " where 1=1 "
 	if relation.ArticleID > 0 {
 		whereSQL += " and a.article_id=" + intToSafeString(relation.ArticleID)
 	} else {
-		return articleTagRelations
+		return articleTagRelationWithTags
 	}
 
 	whereSQL += " order by a.id asc "
 	connection := connect()
 	defer release(connection)
 
-	rows, err := connection.Query(queryTagArticleTagRelationsSQL + whereSQL)
+	rows, err := connection.Query(queryArticleTagRelationWithTagsSQL + whereSQL)
 	defer rows.Close()
 	if rows == nil {
-		return articleTagRelations
+		return articleTagRelationWithTags
 	}
 	if err != nil {
 		panic(err)
 	}
 
-	var temp ArticleTagRelation
+	var temp ArticleTagRelationWithTag
 	for rows.Next() {
-		rows.Scan(&temp.ID, &temp.ArticleID, &temp.TagID, &temp.Name, &temp.TagType)
-		articleTagRelations = append(articleTagRelations, temp)
+		rows.Scan(&temp.ID, &temp.ArticleID, &temp.TagArticleID, &temp.Name, &temp.Type)
+		articleTagRelationWithTags = append(articleTagRelationWithTags, temp)
 	}
 
-	return articleTagRelations
+	return articleTagRelationWithTags
+}
+
+func queryArticleTagRelationWithArticles(relation ArticleTagRelationWithArticle) []ArticleTagRelationWithArticle {
+	var articleTagRelationWithArticles []ArticleTagRelationWithArticle
+	whereSQL := " where 1=1 "
+	if relation.TagArticleID > 0 {
+		whereSQL += " and a.article_id=" + intToSafeString(relation.TagArticleID)
+	} else {
+		return articleTagRelationWithArticles
+	}
+
+	whereSQL += " order by a.id asc "
+	connection := connect()
+	defer release(connection)
+
+	rows, err := connection.Query(queryArticleTagRelationWithArticlesSQL + whereSQL)
+	defer rows.Close()
+	if rows == nil {
+		return articleTagRelationWithArticles
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	var temp ArticleTagRelationWithArticle
+	for rows.Next() {
+		rows.Scan(&temp.ID, &temp.ArticleID, &temp.TagArticleID, &temp.Title)
+		articleTagRelationWithArticles = append(articleTagRelationWithArticles, temp)
+	}
+
+	return articleTagRelationWithArticles
 }
 
 func addArticleTagRelation(relation ArticleTagRelation) int {
@@ -92,7 +100,7 @@ func addArticleTagRelation(relation ArticleTagRelation) int {
 		return config.DBErrorConnection
 	}
 
-	_, err = stmt.Exec(relation.ArticleID, relation.TagID)
+	_, err = stmt.Exec(relation.ArticleID, relation.TagArticleID)
 	if err != nil {
 		return config.DBErrorExecution
 
@@ -109,7 +117,7 @@ func updateArticleTagRelation(relation ArticleTagRelation) int {
 		return config.DBErrorConnection
 	}
 
-	_, err = stmt.Exec(relation.ArticleID, relation.TagID, relation.ID)
+	_, err = stmt.Exec(relation.ArticleID, relation.TagArticleID, relation.ID)
 	if err != nil {
 		return config.DBErrorExecution
 	}
@@ -130,8 +138,8 @@ func deleteArticleTagRelations(relation ArticleTagRelation) int {
 		hasCondition = true
 	}
 
-	if relation.TagID > 0 {
-		whereSQL += " and tag_id=" + intToSafeString(relation.TagID)
+	if relation.TagArticleID > 0 {
+		whereSQL += " and tag_article_id=" + intToSafeString(relation.TagArticleID)
 		hasCondition = true
 	}
 

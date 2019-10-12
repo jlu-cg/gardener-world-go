@@ -1,15 +1,12 @@
 package service
 
-//QueryFragment 碎片
-type QueryFragment struct {
-	Fragment
-	LastID int `json:"lastId"`
-}
-
 //QueryFragments 查询碎片
-func QueryFragments(fragment QueryFragment) []Fragment {
-	fragments := queryFragments(fragment.Fragment, fragment.LastID)
-	return fragments
+func QueryFragments(fragment FragmentWithTag, lastID int) []FragmentWithTag {
+	if fragment.TagFragmentID > 0 {
+		return queryFragmentWithTags(fragment, lastID)
+	}
+	fragmentWithTags := queryFragments(fragment.Fragment, lastID)
+	return fragmentWithTags
 }
 
 //SaveFragment 保存碎片
@@ -23,17 +20,17 @@ func SaveFragment(fragment Fragment) int {
 }
 
 //QueryFragmentByID 查询碎片
-func QueryFragmentByID(fragmentID int) Fragment {
+func QueryFragmentByID(fragmentID int) FragmentWithTag {
 	if fragmentID > 0 {
 		var queryFragment Fragment
 		queryFragment.ID = fragmentID
-		fragments := queryFragments(queryFragment, 0)
-		if len(fragments) > 0 {
-			return fragments[0]
+		fragmentWithTags := queryFragments(queryFragment, 0)
+		if len(fragmentWithTags) > 0 {
+			return fragmentWithTags[0]
 		}
 	}
-	var fragment Fragment
-	return fragment
+	var fragmentWithTag FragmentWithTag
+	return fragmentWithTag
 }
 
 //DeleteFragmentByID 删除碎片

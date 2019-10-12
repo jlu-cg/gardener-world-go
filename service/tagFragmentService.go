@@ -38,7 +38,7 @@ func DeleteTagFragmentByID(id int) int {
 	code := deleteTagFragmentByID(id)
 
 	var deleteFragmentTagRelation FragmentTagRelation
-	deleteFragmentTagRelation.TagID = id
+	deleteFragmentTagRelation.TagFragmentID = id
 	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
 
 	var deleteTagArticleFragmentRelation TagArticleFragmentRelation

@@ -9,11 +9,18 @@ import (
 func initArticleTagRelation(app *iris.Application, crs context.Handler) {
 	articleTagRelationV1 := app.Party("/article/tag/relation/v1", crs).AllowMethods(iris.MethodOptions)
 	{
-		articleTagRelationV1.Post("/list", func(ctx iris.Context) {
-			var queryArticleTagRelation service.ArticleTagRelation
-			ctx.ReadJSON(&queryArticleTagRelation)
-			articleTagRelations := service.QueryArticleTagRelations(queryArticleTagRelation)
-			ctx.JSON(articleTagRelations)
+		articleTagRelationV1.Post("/list/article", func(ctx iris.Context) {
+			var queryArticleTagRelationWithArticle service.ArticleTagRelationWithArticle
+			ctx.ReadJSON(&queryArticleTagRelationWithArticle)
+			articleTagRelationWithArticles := service.QueryArticleTagRelationWithArticles(queryArticleTagRelationWithArticle)
+			ctx.JSON(articleTagRelationWithArticles)
+		})
+
+		articleTagRelationV1.Post("/list/tag", func(ctx iris.Context) {
+			var queryArticleTagRelationWithTag service.ArticleTagRelationWithTag
+			ctx.ReadJSON(&queryArticleTagRelationWithTag)
+			articleTagRelationWithTags := service.QueryArticleTagRelationWithTags(queryArticleTagRelationWithTag)
+			ctx.JSON(articleTagRelationWithTags)
 		})
 
 		articleTagRelationV1.Post("/save", func(ctx iris.Context) {
