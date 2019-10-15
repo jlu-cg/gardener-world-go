@@ -2,22 +2,24 @@ package service
 
 import "github.com/gardener/gardener-world-go/config"
 
+type ArticleFragmentRelation struct {
+	ID         int   `json:"id"`
+	ArticleID  int   `json:"articleId"`
+	FragmentID int   `json:"fragmentId"`
+	Position   int16 `json:"position"`
+}
+
 //ArticleFragmentRelationDetail 文章关联详情
 type ArticleFragmentRelationDetail struct {
-	ID         int    `json:"id"`
-	ArticleID  int    `json:"articleId"`
-	FragmentID int    `json:"fragmentId"`
-	Position   int16  `json:"position"`
-	Title      string `json:"title"`
+	ArticleFragmentRelation
+	Title string `json:"title"`
 }
 
 //ArticleFragmentRelationDocumentDetail 生成文档关联
 type ArticleFragmentRelationDocumentDetail struct {
-	ID         int    `json:"id"`
-	FragmentID int    `json:"fragmentId"`
-	Position   int16  `json:"position"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
+	ArticleFragmentRelation
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 const (
@@ -106,6 +108,16 @@ func deleteArticleFragmentRelations(relation ArticleFragmentRelationDetail) int 
 
 	if relation.ID > 0 {
 		whereSQL += " and id=" + intToSafeString(relation.ID)
+		hasCondition = true
+	}
+
+	if relation.ArticleID > 0 {
+		whereSQL += " and article_id=" + intToSafeString(relation.ArticleID)
+		hasCondition = true
+	}
+
+	if relation.FragmentID > 0 {
+		whereSQL += " and fragment_id=" + intToSafeString(relation.FragmentID)
 		hasCondition = true
 	}
 

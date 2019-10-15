@@ -32,7 +32,9 @@ func initArticleFragmentRelation(app *iris.Application, crs context.Handler) {
 
 		articleFragmentRelationV1.Get("/delete", func(ctx iris.Context) {
 			articleFragmentRelationID := getIntVal("articleFragmentRelationId", 0, ctx)
-			result := service.DeleteArticleFragmentRelationByID(articleFragmentRelationID)
+			var deleteArticleFragmentRelation service.ArticleFragmentRelationDetail
+			deleteArticleFragmentRelation.ID = articleFragmentRelationID
+			result := service.DeleteArticleFragmentRelations(deleteArticleFragmentRelation)
 			ctx.JSON(result)
 		})
 	}

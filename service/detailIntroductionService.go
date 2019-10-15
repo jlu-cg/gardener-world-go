@@ -30,5 +30,17 @@ func SaveDetailIntroduction(introduction DetailIntroduction) int {
 
 //DeleteDetailIntroductions 删除详细介绍
 func DeleteDetailIntroductions(introduction DetailIntroduction) int {
-	return deleteDetailIntroductions(introduction)
+	code := deleteDetailIntroductions(introduction)
+
+	//删除碎片和详细介绍的对应关系
+	var deleteFragmentIntroductionRelation FragmentIntroductionRelation
+	deleteFragmentIntroductionRelation.DetailIntroductionID = introduction.ID
+	code = DeleteFragmentIntroductionRelations(deleteFragmentIntroductionRelation)
+
+	//删除详细介绍和环境标签对应关系
+	var deleteIntroductionEnvironmentRelation IntroductionEnvironmentRelation
+	deleteIntroductionEnvironmentRelation.DetailIntroductionID = introduction.ID
+	code = DeleteIntroductionEnvironmentRelations(deleteIntroductionEnvironmentRelation)
+
+	return code
 }

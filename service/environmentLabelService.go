@@ -30,5 +30,12 @@ func SaveEnvironmentLabel(label EnvironmentLabel) int {
 
 //DeleteEnvironmentLabel 删除环境标签
 func DeleteEnvironmentLabels(label EnvironmentLabel) int {
-	return deleteEnvironmentLabels(label)
+	code := deleteEnvironmentLabels(label)
+
+	//删除详细介绍和环境标签对应关系
+	var deleteIntroductionEnvironmentRelation IntroductionEnvironmentRelation
+	deleteIntroductionEnvironmentRelation.EnvironmentLabelID = label.ID
+	code = DeleteIntroductionEnvironmentRelations(deleteIntroductionEnvironmentRelation)
+
+	return code
 }

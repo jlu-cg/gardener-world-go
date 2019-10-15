@@ -40,8 +40,15 @@ func DeleteFragmentByID(fragmentID int) int {
 	}
 	code := deleteFragmentByID(fragmentID)
 
+	//删除碎片和标签对应关系
 	var deleteFragmentTagRelation FragmentTagRelation
 	deleteFragmentTagRelation.FragmentID = fragmentID
 	code = DeleteFragmentTagRelations(deleteFragmentTagRelation)
+
+	//删除碎片和详细介绍的对应关系
+	var deleteFragmentIntroductionRelation FragmentIntroductionRelation
+	deleteFragmentIntroductionRelation.FragmentID = fragmentID
+	code = DeleteFragmentIntroductionRelations(deleteFragmentIntroductionRelation)
+
 	return code
 }

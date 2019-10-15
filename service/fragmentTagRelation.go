@@ -13,8 +13,7 @@ type FragmentTagRelation struct {
 
 type FragmentTagRelationWithTag struct {
 	FragmentTagRelation
-	Name string `json:"name"`
-	Type int    `json:"type"`
+	Type int `json:"type"`
 }
 
 type FragmentTagRelationWithFragment struct {

@@ -40,9 +40,15 @@ func DeleteArticleByID(articleID int) int {
 
 	code := deleteArticleByID(articleID)
 
+	//删除文章标签关系
 	var deleteArticleTagRelation ArticleTagRelation
 	deleteArticleTagRelation.ArticleID = articleID
 	code = deleteArticleTagRelations(deleteArticleTagRelation)
+
+	//删除文章标签关系
+	var deleteArticleFragmentRelation ArticleFragmentRelationDetail
+	deleteArticleFragmentRelation.ArticleID = articleID
+	code = DeleteArticleFragmentRelations(deleteArticleFragmentRelation)
 
 	return code
 }
