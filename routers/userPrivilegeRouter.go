@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryUserPrivilege struct {
+	service.UserPrivilege
+	LastID int `json:"lastId"`
+}
+
 func initUserPrivilege(app *iris.Application, crs context.Handler) {
 	userPrivilegeV1 := app.Party("/user/privilege/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		userPrivilegeV1.Post("/list", func(ctx iris.Context) {
-			var queryUserPrivilege service.UserPrivilege
+			var queryUserPrivilege queryUserPrivilege
 			ctx.ReadJSON(&queryUserPrivilege)
-			lastID := postIntVal("lastId", 0, ctx)
-			userInfos := service.QueryUserPrivileges(queryUserPrivilege, lastID)
+			userInfos := service.QueryUserPrivileges(queryUserPrivilege.UserPrivilege, queryUserPrivilege.LastID)
 			ctx.JSON(userInfos)
 		})
 

@@ -6,15 +6,19 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryTagArticle struct {
+	service.TagArticle
+	LastID int `json:"lastId"`
+}
+
 func initTagArticle(app *iris.Application, crs context.Handler) {
 	tagArticleV1 := app.Party("/tag/article/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		tagArticleV1.Post("/list", func(ctx iris.Context) {
-			var queryTagArticle service.TagArticle
+			var queryTagArticle queryTagArticle
 			ctx.ReadJSON(&queryTagArticle)
-			lastID := postIntVal("lastId", 0, ctx)
 
-			tagArticles := service.QueryTagArticles(queryTagArticle, lastID)
+			tagArticles := service.QueryTagArticles(queryTagArticle.TagArticle, queryTagArticle.LastID)
 			ctx.JSON(tagArticles)
 		})
 

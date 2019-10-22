@@ -31,5 +31,11 @@ func SaveQuestion(question Question) int {
 
 //DeleteQuestions 删除问题
 func DeleteQuestions(question Question) int {
-	return deleteQuestions(question)
+	code := deleteQuestions(question)
+
+	var deleteQuestionSolutionRelation QuestionSolutionRelation
+	deleteQuestionSolutionRelation.QuestionID = question.ID
+	code = DeleteQuestionSolutionRelations(deleteQuestionSolutionRelation)
+
+	return code
 }

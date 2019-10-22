@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryUserInfo struct {
+	service.UserInfo
+	LastID int `json:"lastId"`
+}
+
 func initUserInfo(app *iris.Application, crs context.Handler) {
 	userInfoV1 := app.Party("/user/info/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		userInfoV1.Post("/list", func(ctx iris.Context) {
-			var queryUserInfo service.UserInfo
+			var queryUserInfo queryUserInfo
 			ctx.ReadJSON(&queryUserInfo)
-			lastID := postIntVal("lastId", 0, ctx)
-			userInfos := service.QueryUserInfos(queryUserInfo, lastID)
+			userInfos := service.QueryUserInfos(queryUserInfo.UserInfo, queryUserInfo.LastID)
 			ctx.JSON(userInfos)
 		})
 

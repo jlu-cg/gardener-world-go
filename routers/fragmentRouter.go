@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryFragmentWithTag struct {
+	service.FragmentWithTag
+	LastID int `json:"lastId"`
+}
+
 func initFragment(app *iris.Application, crs context.Handler) {
 	fragmentV1 := app.Party("/fragment/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		fragmentV1.Post("/list", func(ctx iris.Context) {
-			var queryFragmentWithTag service.FragmentWithTag
+			var queryFragmentWithTag queryFragmentWithTag
 			ctx.ReadJSON(&queryFragmentWithTag)
-			lastID := postIntVal("lastId", 0, ctx)
-			fragmentWithTags := service.QueryFragments(queryFragmentWithTag, lastID)
+			fragmentWithTags := service.QueryFragments(queryFragmentWithTag.FragmentWithTag, queryFragmentWithTag.LastID)
 			ctx.JSON(fragmentWithTags)
 		})
 

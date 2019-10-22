@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryDetailIntroduction struct {
+	service.DetailIntroduction
+	LastID int `json:"lastId"`
+}
+
 func initDetailIntroduction(app *iris.Application, crs context.Handler) {
 	detailIntroductionV1 := app.Party("/detail/introduction/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		detailIntroductionV1.Post("/list", func(ctx iris.Context) {
-			var queryDetailIntroduction service.DetailIntroduction
+			var queryDetailIntroduction queryDetailIntroduction
 			ctx.ReadJSON(&queryDetailIntroduction)
-			lastID := postIntVal("lastId", 0, ctx)
-			detailIntroductions := service.QueryDetailIntroductions(queryDetailIntroduction, lastID)
+			detailIntroductions := service.QueryDetailIntroductions(queryDetailIntroduction.DetailIntroduction, queryDetailIntroduction.LastID)
 			ctx.JSON(detailIntroductions)
 		})
 

@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryUserRole struct {
+	service.UserRole
+	LastID int `json:"lastId"`
+}
+
 func initUserRole(app *iris.Application, crs context.Handler) {
 	userRoleV1 := app.Party("/user/role/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		userRoleV1.Post("/list", func(ctx iris.Context) {
-			var queryUserRole service.UserRole
+			var queryUserRole queryUserRole
 			ctx.ReadJSON(&queryUserRole)
-			lastID := postIntVal("lastId", 0, ctx)
-			userInfos := service.QueryUserRoles(queryUserRole, lastID)
+			userInfos := service.QueryUserRoles(queryUserRole.UserRole, queryUserRole.LastID)
 			ctx.JSON(userInfos)
 		})
 

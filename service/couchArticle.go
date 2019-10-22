@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"strconv"
+
+	"github.com/gardener/gardener-world-go/config"
 )
 
 //ArticleDocument 文章文档
@@ -27,17 +29,20 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 
 	article := QueryArticleByID(articleID)
 	if article.ID == 0 {
-		return 1
+		return config.ArticleStatusPublish
 	}
 
-	article.Status = 1
+	article.Status = config.ArticleStatusPublish
 	article.ID = articleID
 	SaveArticle(article.Article)
 
 	articleIDStr := strconv.Itoa(articleID)
 	oldArticleDocument := CouchdbGetArticleDocumentByArticleID(articleID)
 
+	//查询文章关联碎片的详情
 	articleFragmentRelationDocumentDetails := queryArticleFragmentRelationDocumentDetails(articleID)
+
+	//查询文章依赖的文章
 	var detail ArticleArticleRelationDetail
 	detail.ArticleID = articleID
 	articleArticleRelationDetails := queryArticleArticleRelationDetails(detail)
@@ -52,12 +57,12 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 		articleDocumentBody, _ := json.Marshal(articleDocument)
 		code = couchdbUpdateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
 	} else {
-		var articleDocumentAdd ArticleDocumentAdd
-		articleDocumentAdd.Article = article.Article
-		articleDocumentAdd.ArticleArticleRelationDetails = articleArticleRelationDetails
-		articleDocumentAdd.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
-		articleDocumentBody, _ := json.Marshal(articleDocumentAdd)
-		code = couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(articleDocumentBody))
+		var addArticleDocument ArticleDocumentAdd
+		addArticleDocument.Article = article.Article
+		addArticleDocument.ArticleArticleRelationDetails = articleArticleRelationDetails
+		addArticleDocument.ArticleFragmentRelationDocumentDetails = articleFragmentRelationDocumentDetails
+		addArticleDocumentBody, _ := json.Marshal(addArticleDocument)
+		code = couchdbCreateDoc(articleCouchdbName, articleIDStr, bytes.NewReader(addArticleDocumentBody))
 	}
 	return code
 }
@@ -66,11 +71,11 @@ func CouchdbArticleGenerateDocument(articleID int) int {
 func CouchdbArticleCancelDocument(articleID int) int {
 
 	if articleID == 0 {
-		return 1
+		return config.ArticleStatusNotPublish
 	}
 
 	var article Article
-	article.Status = 2
+	article.Status = config.ArticleStatusNotPublish
 	article.ID = articleID
 	SaveArticle(article)
 

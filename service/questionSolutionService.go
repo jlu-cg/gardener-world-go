@@ -30,5 +30,11 @@ func SaveQuestionSolution(solution QuestionSolution) int {
 
 //DeleteQuestionSolutions 删除问题解决方式
 func DeleteQuestionSolutions(solution QuestionSolution) int {
-	return deleteQuestionSolutions(solution)
+	code := deleteQuestionSolutions(solution)
+
+	var deleteQuestionSolutionRelation QuestionSolutionRelation
+	deleteQuestionSolutionRelation.SolutionID = solution.ID
+	code = DeleteQuestionSolutionRelations(deleteQuestionSolutionRelation)
+
+	return code
 }

@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryEnvironmentLabel struct {
+	service.EnvironmentLabel
+	LastID int `json:"lastId"`
+}
+
 func initEnvironmentLabel(app *iris.Application, crs context.Handler) {
 	environmentLabelV1 := app.Party("/environment/label/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		environmentLabelV1.Post("/list", func(ctx iris.Context) {
-			var queryEnvironmentLabel service.EnvironmentLabel
+			var queryEnvironmentLabel queryEnvironmentLabel
 			ctx.ReadJSON(&queryEnvironmentLabel)
-			lastID := postIntVal("lastId", 0, ctx)
-			environmentLabels := service.QueryEnvironmentLabels(queryEnvironmentLabel, lastID)
+			environmentLabels := service.QueryEnvironmentLabels(queryEnvironmentLabel.EnvironmentLabel, queryEnvironmentLabel.LastID)
 			ctx.JSON(environmentLabels)
 		})
 

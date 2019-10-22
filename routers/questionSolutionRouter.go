@@ -6,14 +6,18 @@ import (
 	"github.com/kataras/iris/context"
 )
 
+type queryQuestionSolution struct {
+	service.QuestionSolution
+	LastID int `json:"lastId"`
+}
+
 func initQuestionSolution(app *iris.Application, crs context.Handler) {
 	questionSolutionV1 := app.Party("/question/solution/v1", crs).AllowMethods(iris.MethodOptions)
 	{
 		questionSolutionV1.Post("/list", func(ctx iris.Context) {
-			var queryQuestionSolution service.QuestionSolution
+			var queryQuestionSolution queryQuestionSolution
 			ctx.ReadJSON(&queryQuestionSolution)
-			lastID := postIntVal("lastId", 0, ctx)
-			questionSolutions := service.QueryQuestionSolutions(queryQuestionSolution, lastID)
+			questionSolutions := service.QueryQuestionSolutions(queryQuestionSolution.QuestionSolution, queryQuestionSolution.LastID)
 			ctx.JSON(questionSolutions)
 		})
 

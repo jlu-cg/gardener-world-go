@@ -9,3 +9,8 @@ const (
 	DBErrorCursor
 	DBErrorNoData
 )
+
+const (
+	ArticleStatusNotPublish = iota
+	ArticleStatusPublish
+)
