@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gardener/gardener-world-go/config"
+	"github.com/gardener/gardener-world-go/log"
 	"github.com/gardener/gardener-world-go/routers"
 	"github.com/gardener/gardener-world-go/service"
 	"github.com/iris-contrib/middleware/cors"
@@ -17,6 +18,7 @@ func main() {
 	service.InitPool(config)
 	service.InitCouchDb(config)
 
+	log.GardenerLog.Debug("{}", 1)
 	fmt.Printf("%d\n", config.ServerConfig.Port)
 	fmt.Printf("%s", config.PgConfig.URL)
 

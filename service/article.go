@@ -35,6 +35,10 @@ func queryArticleWithTags(article ArticleWithTag, lastID int) []ArticleWithTag {
 		whereSQL += " and a.id=" + intToSafeString(article.ID)
 	}
 
+	if article.Title != "" {
+		whereSQL += " and a.title like '" + strToSafeString(article.Title) + "%' "
+	}
+
 	if article.TagArticleID > 0 {
 		whereSQL += " and b.tag_article_id=" + intToSafeString(article.TagArticleID)
 	}
@@ -69,6 +73,10 @@ func queryArticles(article Article, lastID int) []ArticleWithTag {
 
 	if article.ID > 0 {
 		whereSQL += " and id=" + intToSafeString(article.ID)
+	}
+
+	if article.Title != "" {
+		whereSQL += " and title like '" + strToSafeString(article.Title) + "%' "
 	}
 
 	if lastID >= 0 {
